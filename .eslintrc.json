@@ -26,16 +26,16 @@
           "module-resolve",
           {
             "alias": {
-              "@routes": "./src/routes",
-              "@config": "./src/config",
-              "@models": "./src/models",
-              "@graphql": "./src/graphql",
-              "@interfaces": "./src/interfaces",
-              "@middlewares": "./src/middlewares",
-              "@libs": "./src/libs",
-              "@helpers": "./src/helpers",
-              "@controllers": "./src/controllers",
-              "@utils": "./src/utils"
+              "@routes": "src/routes",
+              "@config": "src/config",
+              "@models": "src/models",
+              "@graphql": "src/graphql",
+              "@interfaces": "src/interfaces",
+              "@middlewares": "src/middlewares",
+              "@libs": "src/libs",
+              "@helpers": "src/helpers",
+              "@controllers": "src/controllers",
+              "@utils": "src/utils"
             }
           }
         ]

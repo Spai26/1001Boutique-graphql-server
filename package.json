@@ -1,8 +1,8 @@
 {
-  "name": "project_mern",
+  "name": "1001boutique-graphql-server",
   "version": "1.0.0",
   "keywords": [],
-  "author": "SergioAi",
+  "author": "SergioAi <sergioai.si93@gmail.com>",
   "license": "ISC",
   "description": "",
   "exports": "./dist/index.js",
