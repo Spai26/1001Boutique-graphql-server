@@ -3,13 +3,13 @@ import { keys } from './variables';
 import { logger } from '@libs/winstom.lib';
 
 let database: mongoose.Connection;
-
+const connection = keys.NODE_ENV === 'test' ? keys.TEST : keys.URI;
 export const connectionDB = async () => {
   if (database) {
     return;
   }
   mongoose.set('strictQuery', false);
-  await mongoose.connect(keys.URI, {
+  await mongoose.connect(connection, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   } as ConnectOptions);

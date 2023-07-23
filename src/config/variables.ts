@@ -10,6 +10,7 @@ export const keys = {
   NODE_ENV: process.env.NODE_ENV,
   //database
   URI: process.env.DATABASE_URL,
+  TEST: process.env.DATABASE_TEST,
   //cloudinary
   CLOUDINARY_NAME: process.env.CLOUDINARY_NAME,
   CLOUDINARY_KEY: process.env.CLOUDINARY_KEY,
