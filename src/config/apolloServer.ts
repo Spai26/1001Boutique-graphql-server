@@ -1,42 +1,29 @@
-import http from 'http';
+import http from 'node:http';
 import cors from 'cors';
-import morgan from 'morgan';
-import express from 'express';
-import compression from 'compression';
-import { logger } from '@libs/winstom.lib';
-import cookieParser = require('cookie-parser');
 
+import { corsOptions } from '@libs/corsOptions';
+import { logger } from '@libs/winstom.lib';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { GraphQLSchema } from 'graphql';
 
 import routeIndex from '@routes/index';
-import { corsOptions } from '@libs/corsOptions';
+
 import {
   getTokenforRequest,
   IContext,
   BaseContext
 } from '@middlewares/authorization/apolloContext';
 import { keys } from './variables';
+import { app } from './server';
 
-//configuracion de express
-const app = express();
-app.use(morgan('dev'));
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(cookieParser());
-app.use(compression());
-
-//apollo server function start
-export async function startApolloServer(
-  typeDefs: any,
-  resolvers: any
-): Promise<void> {
+export async function startApolloServer(typeDefs, resolvers): Promise<void> {
   const httpServer = http.createServer(app);
 
-  //graphql-tols/schema
-  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  //  graphql-tols/schema
+  const schema: GraphQLSchema = makeExecutableSchema({ typeDefs, resolvers });
 
   const server = new ApolloServer<IContext>({
     schema,
@@ -46,10 +33,10 @@ export async function startApolloServer(
 
   await server.start();
 
-  //raiz api-rest
+  //  raiz api_rest
   app.use('/api', routeIndex);
 
-  //raiz graphql
+  //  raiz graphql
   app.use(
     '/graphql',
     cors<cors.CorsRequest>(corsOptions),
@@ -61,17 +48,16 @@ export async function startApolloServer(
     })
   );
 
-  await new Promise<void>((resolve) =>
+  await new Promise<void>((resolve) => {
     httpServer.listen(
       {
         port: keys.PORT
       },
       resolve
-    )
-  );
+    );
+  });
 
-  //info proyect
   logger.info(`Node env on ${keys.NODE_ENV}`);
-  logger.info(`✓ Server running on ${keys.HOST}:${keys.PORT}  `);
-  logger.info(`✓ GraphQL running on ${keys.HOST}:${keys.PORT}/graphql  `);
+  logger.info(`✓ Server running on ${keys.HOST}:${keys.PORT}`);
+  logger.info(`✓ GraphQL running on ${keys.HOST}:${keys.PORT}/graphql`);
 }
