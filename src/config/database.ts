@@ -1,8 +1,8 @@
 import mongoose, { ConnectOptions } from 'mongoose';
 import { keys } from './variables';
-import { logger } from '@libs/winstom.lib';
 
 let database: mongoose.Connection;
+
 const connection = keys.NODE_ENV === 'test' ? keys.TEST : keys.URI;
 export const connectionDB = async () => {
   if (database) {
@@ -15,14 +15,6 @@ export const connectionDB = async () => {
   } as ConnectOptions);
 
   database = mongoose.connection;
-
-  database.once('open', async () => {
-    logger.info("Connected to the database successfully! It's time to work!");
-  });
-
-  database.on('error', async () => {
-    logger.info(`Connection error, please verify the credentials`);
-  });
 };
 
 export const disconnect = () => {
