@@ -4,3 +4,5 @@ build
 .dockerignore
 .Dockerfile
 .fly.toml
+.coverage
+package-lock.json

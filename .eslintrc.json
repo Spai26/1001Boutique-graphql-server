@@ -1,7 +1,8 @@
 {
   "env": {
     "node": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
@@ -18,7 +19,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": "./tsconfig.json",
-    "tsconfigRootDir": "./"
+    "tsconfigRootDir": "."
   },
   "plugins": ["@typescript-eslint", "import", "prettier"],
   "rules": {
@@ -60,7 +61,8 @@
   },
   "settings": {
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts"]
+      "@typescript-eslint/parser": [".ts"],
+      "node": ["src"]
     },
     "import/resolver": {
       "typescript": {

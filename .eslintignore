@@ -2,3 +2,5 @@ node_modules
 build
 coverage
 .env
+jest.config.ts
+babel.config.js
