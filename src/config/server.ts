@@ -7,7 +7,7 @@ import express, { Express } from 'express';
 
 export const app: Express = express();
 
-//configuracion de express
+// configuracion de express
 
 app.use(morgan('dev'));
 app.use(cors(corsOptions));

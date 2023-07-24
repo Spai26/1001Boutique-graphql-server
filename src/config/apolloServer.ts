@@ -9,7 +9,7 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { GraphQLSchema } from 'graphql';
 
-import routeIndex from '@routes/index';
+import { apiRoute } from '@routes/index';
 
 import {
   getTokenforRequest,
@@ -34,7 +34,7 @@ export async function startApolloServer(typeDefs, resolvers): Promise<void> {
   await server.start();
 
   //  raiz api_rest
-  app.use('/api', routeIndex);
+  app.use('/api', apiRoute);
 
   //  raiz graphql
   app.use(
