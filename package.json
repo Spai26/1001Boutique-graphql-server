@@ -1,6 +1,6 @@
 {
   "name": "1001boutique-graphql-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "keywords": [],
   "author": "SergioAi <sergioai.si93@gmail.com>",
   "license": "ISC",
@@ -10,14 +10,13 @@
     "build": "babel src --extensions \".ts,.js\" --out-dir build --copy-files",
     "start": "node build/index.js",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --config .prettierrc './src/' --write",
+    "format": "prettier --ignore-path .gitignore  --write \"**/*.+(ts|)\"",
     "dev": "nodemon"
   },
   "dependencies": {
     "@apollo/server": "^4.7.1",
     "@graphql-tools/schema": "^10.0.0",
     "bcrypt": "^5.1.0",
-    "class-validator": "^0.14.0",
     "cloudinary": "^1.37.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
@@ -31,8 +30,6 @@
     "mongoose-slug-generator": "^1.0.4",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.22",
-    "reflect-metadata": "^0.1.13",
-    "type-graphql": "^2.0.0-beta.2",
     "uuid": "^9.0.0",
     "winston": "^3.9.0"
   },
@@ -63,7 +60,6 @@
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
   }
 }
