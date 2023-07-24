@@ -6,7 +6,7 @@ import gql from 'graphql-tag';
 
 export const PBlogTypeDefs = gql`
   extend type Query {
-    getpublicBlogs: [PBlog]
+    getAllBlogs: [PBlog]
     getOneBlogbyId(id: ID!): PBlog
     searchByTitle(title: String!): [PBlog]
   }
@@ -15,11 +15,8 @@ const blog = getModelByName('blog');
 
 export const PBlogResolvers = {
   Query: {
-    getpublicBlogs: async (): Promise<IBlogDocument[]> => {
-      return await blog
-        .find({}, { virtual: true })
-        .populate('author')
-        .populate('front_image');
+    getAllBlogs: async (): Promise<IBlogDocument[]> => {
+      return await blog.find({}).populate('author').populate('front_image');
     },
     getOneBlogbyId: async (_: any, args): Promise<IBlogDocument> => {
       //count view
