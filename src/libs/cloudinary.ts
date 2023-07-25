@@ -7,4 +7,4 @@ cloudinary.config({
   api_secret: keys.CLOUDINARY_PASS
 });
 
-export default cloudinary;
+export { cloudinary };

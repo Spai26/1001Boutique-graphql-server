@@ -10,8 +10,8 @@ export const generateDocImage = async (values) => {
 
   if (values.gallery && values.gallery.length > 0) {
     result = await Promise.all(
-      values.gallery.map(async (element) => {
-        return await createNewDocument(
+      values.gallery.map((element) => {
+        return createNewDocument(
           { ...element, source: values.source },
           'image'
         );

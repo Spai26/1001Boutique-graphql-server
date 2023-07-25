@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { RolModel } from '@models/nosql/roles.models';
 import { PermisionModel } from '@models/nosql/permission.models';
 import {
@@ -14,6 +15,7 @@ export const checkArrayElement = (elements) => {
   if (Array.isArray(elements) && elements.length > 0) {
     return true;
   }
+  return false;
 };
 
 /**
@@ -24,15 +26,15 @@ export const checkArrayElement = (elements) => {
 export const assignPermissions = async (
   listpermissions: string[]
 ): Promise<string | boolean> => {
-  //find all permissions[]
+  // find all permissions[]
   const search_permissions_list = await PermisionModel.find({
     _id: { $in: listpermissions }
   });
 
-  //convert to array list
+  // convert to array list
   const extractIdSearch = search_permissions_list.map((p) => p._id.toString());
 
-  //list is equal on search
+  // list is equal on search
   const isListEqual = listpermissions.every((p) => extractIdSearch.includes(p));
 
   if (!isListEqual) {
@@ -51,7 +53,7 @@ export const assignPermissions = async (
  * @returns Promise Query
  */
 export const updateElement = async (elements) => {
-  let result = undefined;
+  let result;
   const { id, name, description, permissions } = elements;
 
   const validArray = await checkArrayElement(permissions);

@@ -1,3 +1,7 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { IRol } from '@interfaces/rol.interface';
+import { getModelByName } from '@helpers/querys/generalConsult';
 import {
   attachUserInDB,
   deleteWithAllRelations,
@@ -11,26 +15,26 @@ import {
 } from '@middlewares/access/index';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
 
-import { getModelByName } from '@helpers/querys/generalConsult';
-import { IRol } from '@interfaces/rol.interface';
 const user = getModelByName('user');
 export const UserResolvers = {
   Query: {
     getAllUsers: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)(async (_, __, context) => {
-          return await user.find({}).populate<{ rol: IRol }>({
+        hasPermission(PERMISSIONS.READ)(async (parent, args, context) => {
+          const allUser = await user.find({}).populate<{ rol: IRol }>({
             path: 'rol',
             populate: {
               path: 'permissions'
             }
           });
+          return allUser;
         })
       )
     ),
 
-    searchUserforEmail: async (_: any, { email }) => {
-      return await getUserForId(email);
+    searchUserforEmail: async (parent, { email }) => {
+      const userByid = await getUserForId(email);
+      return userByid;
     }
   },
 
@@ -38,8 +42,9 @@ export const UserResolvers = {
     createUser: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.CREATE)(
-          async (_: any, { input }, context) => {
-            return await attachUserInDB(input);
+          async (parent, { input }, context) => {
+            const newUser = await attachUserInDB(input);
+            return newUser;
           }
         )
       )
@@ -48,17 +53,18 @@ export const UserResolvers = {
     updateUser: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.UPDATE)(
-          async (_: any, { input }: any, context) => {
-            return await updateControllerUser(input);
+          async (parent, { input }, context) => {
+            const updateUser = await updateControllerUser(input);
+            return updateUser;
           }
         )
       )
     ),
 
-    //eliminar los blogs relacionados por terminar
+    // eliminar los blogs relacionados por terminar
     deletedUser: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.DELETE)(async (_: any, { id }, context) => {
+        hasPermission(PERMISSIONS.DELETE)(async (parent, { id }, context) => {
           return deleteWithAllRelations(id);
         })
       )

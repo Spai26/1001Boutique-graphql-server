@@ -56,11 +56,8 @@ export const typesErrors: Record<string, ErrorType> = {
   }
 };
 
-export const handlerHttpError = (
-  messageError: string,
-  typesErrors: ErrorType
-) => {
-  const { errorCode, errorStatus } = typesErrors;
+export const handlerHttpError = (messageError: string, error: ErrorType) => {
+  const { errorCode, errorStatus } = error;
   return new GraphQLError(messageError, {
     extensions: {
       code: errorCode,

@@ -23,17 +23,15 @@ const UserSchema = new Schema<IUserDocument, IUserModel>(
   }
 );
 
-UserSchema.pre<IUserDocument>('save', async function (next) {
-  const newuser = this;
-
-  if (!newuser.isNew) {
+UserSchema.pre<IUserDocument>('save', async function onSave(next) {
+  if (!this.isNew) {
     return next();
   }
   try {
-    const hashpass = await newuser.encryptPassword(newuser.password);
+    const hashPassword = await this.encryptPassword(this.password);
 
-    newuser.password = hashpass;
-    next();
+    this.password = hashPassword;
+    return next();
   } catch (error) {
     return next(error);
   }
@@ -41,14 +39,16 @@ UserSchema.pre<IUserDocument>('save', async function (next) {
 
 UserSchema.methods.encryptPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(password, salt);
+  const hashPassword = await bcrypt.hash(password, salt);
+  return hashPassword;
 };
 
 UserSchema.statics.comparePassword = async (
   password: string,
   recivePassword: string
 ) => {
-  return await bcrypt.compare(password, recivePassword);
+  const comparePassword = await bcrypt.compare(password, recivePassword);
+  return comparePassword;
 };
 
 export const UserModel = model<IUserDocument, IUserModel>('User', UserSchema);

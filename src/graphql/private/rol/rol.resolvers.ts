@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   authDeleteRoles,
   updateRolesAndPermission
@@ -11,7 +13,7 @@ export const RolResolvers = {
   Query: {
     getAllroles: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)((_, __, context) => {
+        hasPermission(PERMISSIONS.READ)((parent, args, context) => {
           return showListwithRelation('rol', 'permissions');
         })
       )
@@ -22,8 +24,9 @@ export const RolResolvers = {
     updateArrayRolesWithPermissions: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.UPDATE)(
-          async (_: any, { input }: any, context) => {
-            return await updateRolesAndPermission(input);
+          async (parent, { input }, context) => {
+            const updateRoles = await updateRolesAndPermission(input);
+            return updateRoles;
           }
         )
       )
@@ -31,11 +34,10 @@ export const RolResolvers = {
 
     deleteRoles: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.DELETE)(
-          async (_: any, { id }: any, context) => {
-            return await authDeleteRoles(id);
-          }
-        )
+        hasPermission(PERMISSIONS.DELETE)(async (parent, { id }, context) => {
+          const deletedRol = await authDeleteRoles(id);
+          return deletedRol;
+        })
       )
     )
   }

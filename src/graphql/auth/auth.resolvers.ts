@@ -4,7 +4,7 @@ import { authLoginController } from '@controllers/auth/authSessions';
 
 export const AuthResolvers = {
   Mutation: {
-    AuthLogin: async (_: any, { input }, { res }) => {
+    AuthLogin: async (parent, { input }, { res }) => {
       const { _id, rol, username } = await authLoginController(input);
 
       const mytoken = await createAccesToken({
@@ -25,9 +25,10 @@ export const AuthResolvers = {
           }
         };
       }
+      return null;
     },
 
-    authDisconnect: (_: any, __: any, { res }) => {
+    authDisconnect: (parent, args, { res }) => {
       res.cookie('token', '');
       return {
         message: 'Good Bye!',

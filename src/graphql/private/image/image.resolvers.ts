@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { showlist } from '@helpers/querys/generalConsult';
 import { IImage, PERMISSIONS, ROL } from '@interfaces/index';
 import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
@@ -7,13 +9,14 @@ export const ImageResolvers = {
     getAllOnwerImage: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.READ)(
-          async (_, __, context): Promise<IImage[]> => {
+          async (parent, args, context): Promise<IImage[]> => {
             const { alias } = context.user;
-
-            return await showlist('image', {
+            const listImages = await showlist('image', {
               source: alias,
               model_type: 'IMAGE'
             });
+
+            return listImages;
           }
         )
       )
@@ -21,36 +24,16 @@ export const ImageResolvers = {
     getAllOnwerGallery: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.READ)(
-          async (_, __, context): Promise<IImage[]> => {
+          async (parent, args, context): Promise<IImage[]> => {
             const { alias } = context.user;
-
-            return await showlist('image', {
+            const onwerListImage = await showlist('image', {
               source: alias,
               model_type: 'GALLERY'
             });
+            return onwerListImage;
           }
         )
       )
     )
   }
-  /*   Mutation: {
-    emptyField: (_, args) => {
-      return 'hello';
-    }
-    updateImage: async (_, args) => {
-      const { id } = args;
-      const { url } = args.input;
-
-      const data = await ImageModel.findByIdAndUpdate(
-        id,
-        { url },
-        { new: true }
-      );
-
-      return {
-        message: 'Image updated!',
-        success: !!data
-      };
-    }
-  } */
 };

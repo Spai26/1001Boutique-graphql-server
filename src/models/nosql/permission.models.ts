@@ -1,9 +1,8 @@
-import { Schema, model } from 'mongoose';
+import { Schema, Model, model } from 'mongoose';
 import {
   IPermisionDocument,
   IPermission
 } from '@interfaces/permission.interface';
-import { Model } from 'mongoose';
 
 const PermissionSchema = new Schema<IPermisionDocument, Model<IPermission>>(
   {

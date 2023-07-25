@@ -36,6 +36,7 @@ export const attachUserInDB = async (values) => {
         success: true
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error fn: attachUser ${error}`,
@@ -46,7 +47,7 @@ export const attachUserInDB = async (values) => {
 
 export const getUserForId = async (email) => {
   try {
-    return await user.findOne({ email: email });
+    return await user.findOne({ email });
   } catch (error) {
     throw handlerHttpError(
       `Error fn: searchUser ${error}`,
@@ -55,7 +56,7 @@ export const getUserForId = async (email) => {
   }
 };
 
-export const updateControllerUser = async (values: any) => {
+export const updateControllerUser = async (values) => {
   const { id, firstname, lastname, phone, website } = values;
 
   try {
@@ -82,4 +83,6 @@ export const updateControllerUser = async (values: any) => {
   }
 };
 
-export const deleteWithAllRelations = async (id) => {};
+export const deleteWithAllRelations = async (id) => {
+  return `delete user ${id}`;
+};

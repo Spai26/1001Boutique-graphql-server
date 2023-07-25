@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import mongoose, { Document, Model } from 'mongoose';
 import { IBrand } from './brand.interface';
 import { IStore } from './store.interface';
@@ -10,7 +11,7 @@ export interface IUser {
   phone: string;
   website?: string;
   password: string;
-  rol: mongoose.Types.ObjectId; //ref 'rol'
+  rol: mongoose.Types.ObjectId; // ref 'rol'
   brands?: mongoose.Types.DocumentArray<IBrand>;
   stores?: mongoose.Types.DocumentArray<IStore>;
 }

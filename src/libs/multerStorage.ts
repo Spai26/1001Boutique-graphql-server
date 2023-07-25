@@ -1,23 +1,27 @@
+/* eslint-disable func-names */
+/* eslint-disable object-shorthand */
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import { fileFilter } from '@utils/funcitonHelpers';
+import { fileFilter } from '@utils/imageMimeFilter';
+import { logger } from './winstom.lib';
 
-//verifico si existe la carpeta para crearlo
+// verifico si existe la carpeta para crearlo
 let storageCreated = false;
 const storagePath = path.join(__dirname, '../../uploads');
 
 if (!storageCreated && !fs.existsSync(storagePath)) {
   try {
     fs.mkdirSync(storagePath, { recursive: true });
-    console.log('La carpeta se creó exitosamente.');
+    logger.info('La carpeta se creó exitosamente.');
     storageCreated = true;
   } catch (err) {
-    console.error('Error al crear la carpeta:', err);
+    logger.info(
+      'Error al crear la carpeta verifica si la ruta es correcta:',
+      err
+    );
   }
-} else {
-  console.log('La carpeta ya se ha creado anteriormente 🙂 .');
 }
 
 const storage = multer.diskStorage({

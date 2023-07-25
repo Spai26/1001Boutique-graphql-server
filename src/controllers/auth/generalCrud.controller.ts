@@ -4,7 +4,7 @@ import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
-import { generateSlug } from '@utils/funcitonHelpers';
+import { generateSlug } from '@utils/textManipulation';
 
 let result = null;
 
@@ -77,7 +77,7 @@ export const deleteInDB = async (
     const deletedRecord = await model.findByIdAndDelete(id);
     return {
       message: 'Record deleted successfully',
-      success: true
+      success: !!deletedRecord
     };
   } catch (error) {
     throw handlerHttpError(

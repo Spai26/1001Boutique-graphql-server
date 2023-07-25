@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IPropsTypes, listModel } from '@interfaces/index';
 
 import {
@@ -70,8 +71,9 @@ export const existFields = async (
   model: keyof listModel,
   values: IPropsTypes<string>
 ) => {
-  const Model = getModelByName(model);
-  return await Model.findOne(values);
+  Model = getModelByName(model);
+  const find = await Model.findOne(values);
+  return find;
 };
 
 /**
@@ -101,8 +103,7 @@ export const isExistById = async (
  * @returns
  */
 export const createNewDocument = (values, model: keyof listModel) => {
-  const Model = getModelByName(model);
-
+  Model = getModelByName(model);
   return new Model(values);
 };
 
@@ -116,7 +117,8 @@ export const createNewDocument = (values, model: keyof listModel) => {
  */
 export const updateOneElement = async (id, values, model: keyof listModel) => {
   Model = getModelByName(model);
-  return await Model.updateOne(id, values);
+  const update = await Model.updateOne(id, values);
+  return update;
 };
 
 /**
@@ -131,8 +133,9 @@ export const showListwithRelation = async (
   modelname: keyof listModel,
   relation: string
 ) => {
-  const Model = getModelByName(modelname);
-  return await Model.find({}).populate(relation);
+  Model = getModelByName(modelname);
+  const arrayFind = await Model.find({}).populate(relation);
+  return arrayFind;
 };
 
 /**
@@ -148,8 +151,9 @@ export const showlist = async (
   modelname: keyof listModel,
   options?: IPropsTypes<string>
 ) => {
-  const Model = getModelByName(modelname);
-  return options ? await Model.find(options) : await Model.find({});
+  Model = getModelByName(modelname);
+  const result = options ? await Model.find(options) : await Model.find({});
+  return result;
 };
 
 export const searchByRegex = async (
@@ -157,10 +161,11 @@ export const searchByRegex = async (
   field: string,
   contains: string
 ) => {
-  const Model = getModelByName(modelname);
+  Model = getModelByName(modelname);
   const query = {};
   query[field] = { $regex: contains, $options: 'i' };
-  return await Model.find(query);
+  const search = await Model.find(query);
+  return search;
 };
 
 /**
@@ -170,7 +175,7 @@ export const searchByRegex = async (
  * @returns
  */
 export const incrementViewModelbyId = async (modelname, id) => {
-  const Model = getModelByName(modelname);
+  Model = getModelByName(modelname);
   const updateDoc = await Model.updateOne(
     { _id: id },
     { $inc: { count_view: 1 } }

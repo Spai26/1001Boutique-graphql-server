@@ -7,7 +7,7 @@ export interface IBrand {
   biografy: string;
   short_biografy: string;
   slug: string;
-  logo: mongoose.Types.ObjectId; //ref 'image'
+  logo: mongoose.Types.ObjectId; // ref 'image'
   gallery: mongoose.Types.DocumentArray<IImage>;
   collections?: string;
   count_view: number;

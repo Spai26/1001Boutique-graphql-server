@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   attachInDB,
   deleteInDB,
@@ -10,14 +12,14 @@ export const TagResolvers = {
   Mutation: {
     newTag: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.CREATE)((_, { input }, context) => {
+        hasPermission(PERMISSIONS.CREATE)((parent, { input }, context) => {
           return attachInDB('tag', input);
         })
       )
     ),
     updateTag: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)((_: any, { input }, context) => {
+        hasPermission(PERMISSIONS.UPDATE)((parent, { input }, context) => {
           return updateNameWithSlugInDB('tag', input);
         })
       )
@@ -25,7 +27,7 @@ export const TagResolvers = {
 
     deleteTag: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.DELETE)((_: any, { id }, context) => {
+        hasPermission(PERMISSIONS.DELETE)((parent, { id }, context) => {
           return deleteInDB('tag', id);
         })
       )

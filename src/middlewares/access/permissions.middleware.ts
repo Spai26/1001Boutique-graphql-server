@@ -9,8 +9,6 @@ export const hasPermission =
   (allowenPermission: string) =>
   (next) =>
   async (parent, args, context, info) => {
-    let currentAccess;
-    let currentPermission;
     const { rol } = context.user;
     const currentRol = await isExistById(rol, 'rol', 'permissions');
 
@@ -18,9 +16,9 @@ export const hasPermission =
       return next(parent, args, context, info);
     }
 
-    currentPermission = currentRol.permissions.map((p) => p.name);
+    const currentPermission = currentRol.permissions.map((p) => p.name);
 
-    if ((currentAccess = currentPermission.includes(allowenPermission))) {
+    if (currentPermission.includes(allowenPermission)) {
       return next(parent, args, context, info);
     }
 

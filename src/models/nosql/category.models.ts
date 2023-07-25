@@ -1,10 +1,10 @@
 import slug from 'mongoose-slug-generator';
-import mongoose, { Schema, model } from 'mongoose';
-import { ICategoyModel, ICategoryDocument } from '@interfaces/index';
+import mongoose, { Model, Schema, model } from 'mongoose';
+import { ICategory, ICategoryDocument } from '@interfaces/index';
 
 mongoose.plugin(slug);
 
-const CategorySchema = new Schema<ICategoryDocument, ICategoyModel>(
+const CategorySchema = new Schema<ICategoryDocument, Model<ICategory>>(
   {
     name: { type: String, require: true, unique: true },
     slug: { type: String, slug: 'name' }
@@ -17,26 +17,7 @@ const CategorySchema = new Schema<ICategoryDocument, ICategoyModel>(
   }
 );
 
-CategorySchema.statics.updateSlug = async function (id: string) {
-  let result = null;
-  const current = await this.findById(id);
-
-  if (!current) {
-    return;
-  }
-
-  // Actualizar el slug basado en el título
-  current.slug = current.name
-    .toLowerCase()
-    .replace(/[^\w ]+/g, '')
-    .replace(/ +/g, '-');
-
-  // Guardar los cambios en la base de datos
-  result = await current.save();
-  return result;
-};
-
-export const CategoryModel = model<ICategoryDocument, ICategoyModel>(
+export const CategoryModel = model<ICategoryDocument, Model<ICategory>>(
   'Category',
   CategorySchema
 );

@@ -4,13 +4,13 @@ import { typeDefs, resolvers } from '@graphql/schema';
 import { connectionDB } from '@config/database';
 import { createRoles, createPermissionBase, createUser } from '@models/seed';
 
-//database
+// database
 connectionDB();
 
-//data base for work
+// data base for work
 createRoles();
 createPermissionBase();
 createUser();
 
-//init apollo server
+// init apollo server
 startApolloServer(typeDefs, resolvers);

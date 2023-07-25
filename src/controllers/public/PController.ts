@@ -29,8 +29,9 @@ export const incrementViewAndFetchBlogById = async (
         .populate('author')
         .populate('front_image');
     }
+    return null;
   } catch (error) {
-    handlerHttpError(
+    throw handlerHttpError(
       `Error inc view for id ${error}`,
       typesErrors.DATABASE_ERROR
     );

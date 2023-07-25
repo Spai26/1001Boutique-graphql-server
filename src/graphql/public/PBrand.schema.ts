@@ -14,22 +14,24 @@ export const PBrandTypeDefs = gql`
 
 export const PBrandResolvers = {
   Query: {
-    getAllStore: async () => {
-      return await brand
+    getAllBrand: async () => {
+      const listBrand = await brand
         .find({})
         .populate('onwer')
         .populate('gallery')
         .populate('logo');
+      return listBrand;
     },
-    getStoreDetail: async (_, { id }) => {
-      return await brand
+    getBrandDetail: async (parent, { id }) => {
+      const countViewBrand = await brand
         .findById(id)
         .populate('onwer')
         .populate('gallery')
         .populate('logo');
+      return countViewBrand;
     },
 
-    searchStoreBytitle: async (_, args) => {
+    searchBrandBytitle: async (_, args) => {
       const store = await searchByRegex('brand', 'title', args.title);
       return store;
     }

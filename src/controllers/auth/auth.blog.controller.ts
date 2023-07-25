@@ -1,9 +1,10 @@
+/* eslint-disable no-underscore-dangle */
 import { generateDocImage } from '@helpers/querys/Image.query';
-
 import {
   createNewDocument,
   getModelByName
 } from '@helpers/querys/generalConsult';
+
 import {
   IBlogDocument,
   ICtx,
@@ -15,23 +16,24 @@ import {
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
 import { ImageModel } from '@models/nosql';
-import { generateSlug } from '@utils/funcitonHelpers';
+import { generateSlug } from '@utils/textManipulation';
 
-let blog = getModelByName('blog');
-let image = getModelByName('image');
+const blog = getModelByName('blog');
+const image = getModelByName('image');
 
 let updateData = null;
 let imageUpdate = null;
+
 /**
  * @param ctx
  * @returns
  */
 export const showListBlogCtr = async (ctx): Promise<IBlogDocument[]> => {
   const { id } = ctx.user;
-  //falta considerar origin or source
+  // falta considerar origin or source
   try {
     return await blog
-      .find({ author: id }, { virtual: true })
+      .find({ author: id })
       .populate('front_image')
       .populate('author');
   } catch (error) {
@@ -54,7 +56,7 @@ export const detailBlogCtr = async (id): Promise<IBlogDocument> => {
     .populate('author');
 
   if (!dataBlog) {
-    throw handlerHttpError(`Blog dont fount`, typesErrors.NOT_FOUND);
+    throw handlerHttpError('Blog dont fount', typesErrors.NOT_FOUND);
   }
 
   return dataBlog;
@@ -96,14 +98,14 @@ export const updateBlogImageCtr = async (values): Promise<ResponseResult> => {
   const { url } = values.input;
 
   try {
-    //depliego la relacion con image
+    // depliego la relacion con image
     const existBlog = await blog.findById(id).populate('front_image');
 
-    //verifico si ingresa un url
+    // verifico si ingresa un url
     if (existBlog.front_image.url !== url) {
-      //busco por model y actualizo
+      // busco por model y actualizo
       imageUpdate = await image.findOneAndUpdate(
-        { model_id: existBlog._id },
+        { model_id: existBlog.id },
         { url }
       );
     }
@@ -119,10 +121,12 @@ export const updateBlogImageCtr = async (values): Promise<ResponseResult> => {
     );
   }
 };
-
+/**
+ *
+ * @param values
+ * @returns
+ */
 export const updateStatusBlogCtr = async (values): Promise<ResponseResult> => {
-  //solo actualiza status
-
   const { id, status } = values;
 
   try {
@@ -148,7 +152,7 @@ export const updateStatusBlogCtr = async (values): Promise<ResponseResult> => {
  * @returns
  */
 export const attachInDBwithSingleImage = async (
-  values: any,
+  values,
   ctx: ICtx,
   modelname: keyof listModel
 ): Promise<ResponseResult> => {
@@ -157,32 +161,30 @@ export const attachInDBwithSingleImage = async (
   const { url, model_type } = front_image;
 
   try {
-    //generate model_id
-    const image = await generateDocImage({
+    // generate model_id
+    const generateImg = await generateDocImage({
       url,
       model_type,
       model_id: null,
       source: alias
     });
 
-    //model_id reference blog._id
-
-    const newvalue = await createNewDocument(
+    // model_id reference blog._id
+    const newBlog = await createNewDocument(
       {
         title,
         body_content,
         status,
-        front_image: image._id,
+        front_image: generateImg._id,
         author: id,
         origin: alias
       },
       modelname
     );
 
-    image.model_id = newvalue._id;
+    generateImg.model_id = newBlog._id;
 
-    await Promise.all([image.save(), newvalue.save()]);
-    //save document on db
+    await Promise.all([generateImg.save(), newBlog.save()]);
 
     return {
       message: 'Blog created!',
@@ -204,18 +206,18 @@ export const attachInDBwithSingleImage = async (
 export const deleteBlogCtr = async (id): Promise<ResponseResult> => {
   let imageDelete = null;
   try {
-    //extrae el id de la imagen y eliminarla
+    // extrae el id de la imagen y eliminarla
     const blogExist = await blog.findById(id);
 
     if (!blogExist) {
       throw handlerHttpError(
-        `Blog with id does not exist`,
+        'Blog with id does not exist',
         typesErrors.NOT_FOUND
       );
     }
 
     const blogDelete = await blog.deleteOne({ _id: id });
-    //delete image
+    // delete image
     if (blogDelete.deletedCount > 0) {
       imageDelete = await ImageModel.deleteOne({
         model_id: blogExist._id

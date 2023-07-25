@@ -8,15 +8,14 @@ import {
 
 export const hasRol =
   (allowenRoles) => (next) => async (parent, args, context, info) => {
-    let currentAccess;
     const { rol } = context.user;
     const currentRol = await isExistById(rol, 'rol');
 
-    currentAccess =
+    const currentAccess =
       allowenRoles.includes(ROL.ROOT) && currentRol.name === keys.ROOTROL;
 
     if (allowenRoles.includes(currentRol.name) || currentAccess) {
-      return next(parent, args, context);
+      return next(parent, args, context, info);
     }
 
     throw handlerHttpError(

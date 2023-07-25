@@ -1,11 +1,11 @@
+import { removeExtends } from '@utils/textManipulation';
 import { Router } from 'express';
 import { readdirSync } from 'fs';
-import { removeExtends } from '@utils/funcitonHelpers';
 
-const path_route = `${__dirname}`;
+const pathRoute = `${__dirname}`;
 const apiRoute = Router();
 
-readdirSync(path_route).filter((filename) => {
+readdirSync(pathRoute).forEach((filename) => {
   const routefile = removeExtends(filename);
   if (routefile !== 'index') {
     import(`./${routefile}.routes`).then((moduleRouter) => {
@@ -14,4 +14,4 @@ readdirSync(path_route).filter((filename) => {
   }
 });
 
-export default apiRoute;
+export { apiRoute };

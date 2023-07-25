@@ -1,10 +1,10 @@
 import * as jwt from 'jsonwebtoken';
+import { keys } from '@config/variables';
+import { IUserAuth } from '@interfaces/types/type.custom';
 import {
   handlerHttpError,
   typesErrors
 } from '../middlewares/handlerErrorsApollo';
-import { IUserAuth } from '@interfaces/types/type.custom';
-import { keys } from '@config/variables';
 
 let decodedToken: string | jwt.JwtPayload;
 
@@ -32,6 +32,7 @@ export const CheckVerifyToken = (
 
       return decodedToken as jwt.JwtPayload;
     }
+    return null;
   } catch (error) {
     throw handlerHttpError(
       'Error this token no valid.!',

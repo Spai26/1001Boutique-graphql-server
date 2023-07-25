@@ -9,7 +9,7 @@ export const authLoginController = async (values) => {
   const { email, password } = values;
 
   try {
-    const isValidUser = await existFields('user', { email: email });
+    const isValidUser = await existFields('user', { email });
 
     if (!isValidUser) {
       throw handlerHttpError(

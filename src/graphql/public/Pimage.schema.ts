@@ -1,4 +1,3 @@
-import { showlist } from '@helpers/querys/generalConsult';
 import gql from 'graphql-tag';
 
 export const PImageTypeDefs = gql`

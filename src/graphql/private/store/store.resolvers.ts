@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   createNewStoreDocument,
   deleteStoreCtr,
@@ -7,15 +9,14 @@ import { getModelByName } from '@helpers/querys';
 import { PERMISSIONS, ROL } from '@interfaces/index';
 
 import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
-
-import { generateSlug } from '@utils/funcitonHelpers';
+import { generateSlug } from '@utils/textManipulation';
 
 const store = getModelByName('store');
 export const StoreResolvers = {
   Query: {
     getAllOnwerStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)(async (_, __, context) => {
+        hasPermission(PERMISSIONS.READ)(async (parent, args, context) => {
           const { id } = context.user;
 
           const data = store
@@ -38,14 +39,16 @@ export const StoreResolvers = {
   Mutation: {
     attachNewStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.CREATE)(async (_, { input }, context) => {
-          return createNewStoreDocument(input, context);
-        })
+        hasPermission(PERMISSIONS.CREATE)(
+          async (parent, { input }, context) => {
+            return createNewStoreDocument(input, context);
+          }
+        )
       )
     ),
     updateMyStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(async (_, args, context) => {
+        hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
           const { id } = args;
           const { title, ...resInput } = args.input;
 
@@ -61,15 +64,17 @@ export const StoreResolvers = {
 
     updateAnyImageOnStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(async (_, args, context) => {
-          return await updateStoreImages(args);
+        hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
+          const updateImages = await updateStoreImages(args);
+          return updateImages;
         })
       )
     ),
     deleteMyStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.DELETE)(async (_, { id }, context) => {
-          return await deleteStoreCtr(id);
+        hasPermission(PERMISSIONS.DELETE)(async (parent, { id }, context) => {
+          const deleteImages = await deleteStoreCtr(id);
+          return deleteImages;
         })
       )
     )

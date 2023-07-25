@@ -1,6 +1,3 @@
-import { extendResolversFromInterfaces } from '@graphql-tools/schema';
-import mongoose, { Document, Model } from 'mongoose';
-
 export interface searchOptions<T> {
   [key: string]: T;
 }

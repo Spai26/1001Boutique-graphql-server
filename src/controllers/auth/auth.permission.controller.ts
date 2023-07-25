@@ -5,8 +5,6 @@ import {
   isExistById,
   updateOneElement
 } from '@helpers/querys/generalConsult';
-import { IPermission } from '@interfaces/permission.interface';
-
 import {
   handlerHttpError,
   typesErrors
@@ -37,6 +35,7 @@ export const authAttachPermission = async (values: keyValueData<string>) => {
         success: true
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error fn: authPermission ${error}`,
@@ -47,7 +46,6 @@ export const authAttachPermission = async (values: keyValueData<string>) => {
 
 export const authUpdatePermission = async (values: keyValueData<string>) => {
   try {
-    let result: IPermission;
     const { id } = values;
     const isExist = await isExistById(id, 'permission');
 
@@ -55,14 +53,20 @@ export const authUpdatePermission = async (values: keyValueData<string>) => {
       throw handlerHttpError('invalid permission', typesErrors.BAD_REQUEST);
     }
 
-    result = await updateOneElement({ _id: isExist._id }, values, 'permission');
+    const result = await updateOneElement(
+      // eslint-disable-next-line no-underscore-dangle
+      { _id: isExist._id },
+      values,
+      'permission'
+    );
 
     if (result) {
       return {
         message: 'fields updated!',
-        success: true
+        success: !!result
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error fn: authUpdatePermission ${error}`,
@@ -75,8 +79,8 @@ export const authDeletePermission = async (id: keyValueData<string>[]) => {
   let updatePermissionDeleted = null;
 
   try {
-    const deletePromiseArray = id.map(async (data) => {
-      return await MPermission.findByIdAndDelete({ _id: data });
+    const deletePromiseArray = id.map((data) => {
+      return MPermission.findByIdAndDelete({ _id: data });
     });
 
     const result = await Promise.all(deletePromiseArray);
@@ -88,9 +92,9 @@ export const authDeletePermission = async (id: keyValueData<string>[]) => {
     if (result) {
       updatePermissionDeleted = await MRol.updateMany(
         {
-          permissions: { $in: id } //coincidencias
+          permissions: { $in: id }
         },
-        { $pull: { permissions: { $in: id } } } //elimina coincidencia
+        { $pull: { permissions: { $in: id } } }
       );
     }
 
@@ -100,6 +104,7 @@ export const authDeletePermission = async (id: keyValueData<string>[]) => {
         success: true
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error fn: authDeletePermission ${error}`,

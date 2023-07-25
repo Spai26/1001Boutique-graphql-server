@@ -11,7 +11,8 @@ export const PTagTypeDefs = gql`
 export const PTagResolvers = {
   Query: {
     getAllTags: async () => {
-      return await showlist('tag');
+      const list = await showlist('tag');
+      return list;
     },
     searchTagByName: async (_, { text }) => {
       const tag = await searchByRegex('tag', 'name', text);

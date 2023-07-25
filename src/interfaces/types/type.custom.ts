@@ -1,27 +1,25 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-types */
 import { Request, Response } from 'express';
 
 export type IBaseCtx = {};
 
-// !por probar
-export interface ICtx {
-  user?: IUserAuth;
-  req: Request;
-  res: Response;
-}
-
-//interface generico
 export interface IPropsTypes<T> {
   [key: string]: T;
 }
-
-//
 export interface IUserAuth {
   id: IPropsTypes<string>;
   rol: IPropsTypes<string>;
   alias: IPropsTypes<string>;
 }
 
-//variables static for rol
+export interface ICtx {
+  user?: IUserAuth;
+  req: Request;
+  res: Response;
+}
+
 export enum ROL {
   USUARIO = 'usuario',
   VENDOR = 'vendor',
@@ -31,7 +29,6 @@ export enum ROL {
   ROOT = 0
 }
 
-//variables static for permission
 export enum PERMISSIONS {
   CREATE = 'created',
   READ = 'read',
@@ -39,7 +36,6 @@ export enum PERMISSIONS {
   DELETE = 'deleted'
 }
 
-//test item model
 export interface listModel {
   user: string;
   blog: string;
@@ -53,7 +49,6 @@ export interface listModel {
   test: string;
 }
 
-//reponse
 export interface ResponseResult {
   message: string;
   success: boolean;

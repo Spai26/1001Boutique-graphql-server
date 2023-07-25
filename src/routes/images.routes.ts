@@ -1,80 +1,91 @@
 import fs from 'fs';
-import { Response, Router } from 'express';
+import { Response, Router, Express } from 'express';
 
 import { uploadImage } from '@helpers/generateImageUrl';
 import { ResponseResult } from '@interfaces/index';
 import { logoUpload, multipleUpload, singleUpload } from '@libs/multerStorage';
+import { logger } from '@libs/winstom.lib';
 
 const router = Router();
 
-//logo
-router.post('/logo', logoUpload, async (req, res) => {
+/**
+ * * Enpoint for Logo Image
+ * ? .../api/images/logo
+ */
+router.post('/logo', logoUpload, async (req, res): Promise<Response> => {
   try {
     const { path } = req.file;
-
     const tmpPath = path;
 
     const cloudinaryUpload = await uploadImage(tmpPath);
 
     fs.unlink(tmpPath, (error) => {
       if (error) {
-        console.error('Error deleting temporary file:', error);
+        logger.warning('Error deleting temporary file:', error);
       }
     });
     return res
       .status(200)
-      .json({ message: `${cloudinaryUpload}`, success: true });
+      .json({ message: `${cloudinaryUpload}`, success: !!cloudinaryUpload });
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' });
+    return res.status(500).json({ error: 'Something went wrong' });
   }
 });
 
-//file
-router.post('/portada', singleUpload, async (req, res) => {
+/**
+ * * Enpoint for file Image
+ *  ? .../api/images/portada
+ */
+router.post('/portada', singleUpload, async (req, res): Promise<Response> => {
   try {
     const { path } = req.file;
-
     const tmpPath = path;
 
     const cloudinaryUpload = await uploadImage(tmpPath);
 
     fs.unlink(tmpPath, (error) => {
       if (error) {
-        console.error('Error deleting temporary file:', error);
+        logger.warning('Error deleting temporary file:', error);
       }
     });
 
     return res
       .status(200)
-      .json({ message: `${cloudinaryUpload}`, success: true });
+      .json({ message: `${cloudinaryUpload}`, success: !!cloudinaryUpload });
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' });
+    return res.status(500).json({ error: 'Something went wrong' });
   }
 });
 
-//gallery
+/**
+ * * Enpoint for Array Image - gallery
+ *  ? .../api/images/gallery
+ */
 router.post(
   '/gallery',
   multipleUpload,
   async (req, res): Promise<Response<ResponseResult>> => {
-    const files = req.files as Express.Multer.File[];
+    try {
+      const files = req.files as Express.Multer.File[];
 
-    const uploadPromises = files.map(async (file) => {
-      const tempPath = file.path;
-      const imageUrl = await uploadImage(tempPath);
+      const uploadPromises = files.map(async (file) => {
+        const tempPath = file.path;
+        const imageUrl = await uploadImage(tempPath);
 
-      fs.unlink(tempPath, (error) => {
-        if (error) {
-          console.error('Error deleting temporary file:', error);
-        }
+        fs.unlink(tempPath, (error) => {
+          if (error) {
+            logger.warning('Error deleting temporary file:', error);
+          }
+        });
+
+        return imageUrl;
       });
+      const results = await Promise.all(uploadPromises);
 
-      return imageUrl;
-    });
-
-    const results = await Promise.all(uploadPromises);
-
-    return res.status(200).json({ message: results, success: true });
+      return res.status(200).json({ message: results, success: !!results });
+    } catch (error) {
+      return res.status(500).json({ error: 'Something went wrong' });
+    }
   }
 );
 

@@ -10,14 +10,14 @@ import {
 } from '@middlewares/handlerErrorsApollo';
 import { ImageModel, StoreModel } from '@models/nosql';
 
-/***
+/**
  * * the function is to create a new store document in the database, including generating and saving images associated with the store
  */
 export const createNewStoreDocument = async (input, context) => {
   try {
     const { alias } = context.user;
     const { main_image, logo, gallery, ...resInput } = input;
-
+    // eslint-disable-next-line no-underscore-dangle
     const exist = await existDocById('store', resInput._id);
 
     if (!exist) {
@@ -27,7 +27,7 @@ export const createNewStoreDocument = async (input, context) => {
       );
     }
 
-    //generate document image
+    // generate document image
     const [Dlogo, Dportada, Dgallery] = await Promise.all([
       generateDocImage({ logo, source: alias }),
       generateDocImage({
@@ -40,30 +40,37 @@ export const createNewStoreDocument = async (input, context) => {
       })
     ]);
 
-    //genero un array de id
+    // genero un array de id
     const arrayGallery = Dgallery.map((item) => {
+      // eslint-disable-next-line no-underscore-dangle
       return item._id;
     });
 
     const newStore = await createNewDocument(
       {
+        // eslint-disable-next-line no-underscore-dangle
         main_image: Dportada._id,
+        // eslint-disable-next-line no-underscore-dangle
         logo: Dlogo._id,
         gallery: arrayGallery,
         onwer: context.user.id,
-        ...resInput //all another fields
+        ...resInput // all another fields
       },
       'store'
     );
 
-    //asignamos el modelo origen
+    // asignamos el modelo origen
+    // eslint-disable-next-line no-underscore-dangle
     Dlogo.model_id = newStore._id;
+    // eslint-disable-next-line no-underscore-dangle
     Dportada.model_id = newStore._id;
     Dgallery.forEach((element) => {
-      element.model_id = newStore._id;
+      const modified = { ...element };
+      // eslint-disable-next-line no-underscore-dangle
+      modified.model_id = newStore._id;
     });
 
-    //guardamos el doc en bd
+    // guardamos el doc en bd
     const result = await Promise.all([
       Dlogo.save(),
       Dportada.save(),
@@ -141,6 +148,7 @@ export const deleteStoreCtr = async (id) => {
     }
     const storeDeleted = await StoreModel.deleteOne({ _id: id });
     const imageDeleted = await ImageModel.deleteMany({
+      // eslint-disable-next-line no-underscore-dangle
       model_id: store._id
     });
 
@@ -150,6 +158,7 @@ export const deleteStoreCtr = async (id) => {
         success: true
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error delete store document, ${error}`,

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
 import {
@@ -14,14 +16,14 @@ export const BlogResolvers = {
   Query: {
     getAllOnwerBlogs: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)((_, __, context) => {
+        hasPermission(PERMISSIONS.READ)((parent, args, context) => {
           return showListBlogCtr(context);
         })
       )
     ),
     getBlogbyIdOnwer: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)(async (_, { id }, context) => {
+        hasPermission(PERMISSIONS.READ)(async (parent, { id }, context) => {
           return detailBlogCtr(id);
         })
       )
@@ -31,7 +33,7 @@ export const BlogResolvers = {
     newBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.CREATE)(
-          async (_: any, { input }, context) => {
+          async (parent, { input }, context) => {
             return attachInDBwithSingleImage(input, context, 'blog');
           }
         )
@@ -39,21 +41,21 @@ export const BlogResolvers = {
     ),
     updateMyBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(async (_: any, args, context) => {
+        hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
           return updateBlogCtr(args);
         })
       )
     ),
     updateBlogImage: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(async (_: any, args, context) => {
+        hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
           return updateBlogImageCtr(args);
         })
       )
     ),
     updateStatusBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)((_: any, args, context) => {
+        hasPermission(PERMISSIONS.UPDATE)((parent, args, context) => {
           return updateStatusBlogCtr(args);
         })
       )
@@ -61,7 +63,7 @@ export const BlogResolvers = {
 
     deleteMyBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.DELETE)((_: any, { id }, context) => {
+        hasPermission(PERMISSIONS.DELETE)((parent, { id }, context) => {
           return deleteBlogCtr(id);
         })
       )

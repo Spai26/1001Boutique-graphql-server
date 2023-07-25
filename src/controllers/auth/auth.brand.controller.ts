@@ -14,7 +14,7 @@ export const createNewBrandDocument = async (input, context) => {
     const { alias } = context.user;
     const { logo, gallery, ...resInputBrand } = input;
     console.log(resInputBrand);
-    //generate document image
+    // generate document image
     const [Dlogo, Dgallery] = await Promise.all([
       generateDocImage({ logo, source: alias }),
       generateDocImage({
@@ -23,29 +23,34 @@ export const createNewBrandDocument = async (input, context) => {
       })
     ]);
 
-    //genero un array de id
+    // genero un array de id
     const arrayGallery = Dgallery.map((item) => {
+      // eslint-disable-next-line no-underscore-dangle
       return item._id;
     });
 
     const newBrand = await createNewDocument(
       {
+        // eslint-disable-next-line no-underscore-dangle
         logo: Dlogo._id,
         gallery: arrayGallery,
         onwer: context.user.id,
-        ...resInputBrand //all another fields
+        ...resInputBrand // all another fields
       },
       'brand'
     );
-    console.log(newBrand);
 
-    //asignamos el modelo origen
+    // asignamos el modelo origen
+    // eslint-disable-next-line no-underscore-dangle
     Dlogo.model_id = newBrand._id;
+
     Dgallery.forEach((element) => {
-      element.model_id = newBrand._id;
+      const modified = { ...element };
+      // eslint-disable-next-line no-underscore-dangle
+      modified.model_id = newBrand._id;
     });
 
-    //guardamos el doc en bd
+    // guardamos el doc en bd
     const result = await Promise.all([
       Dlogo.save(),
       ...Dgallery.map((doc) => doc.save()),
@@ -114,6 +119,7 @@ export const deleteBrandCtr = async (id) => {
     }
     const storeDeleted = await BrandModel.deleteOne({ _id: id });
     const imageDeleted = await ImageModel.deleteMany({
+      // eslint-disable-next-line no-underscore-dangle
       model_id: store._id
     });
 
@@ -123,6 +129,7 @@ export const deleteBrandCtr = async (id) => {
         success: true
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error delete store document, ${error}`,

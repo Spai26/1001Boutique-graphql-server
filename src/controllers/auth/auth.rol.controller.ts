@@ -1,9 +1,5 @@
 import { updateElement } from '@helpers/querys/RolesandPermisions.query';
-import {
-  existFields,
-  getModelByName,
-  isExistById
-} from '@helpers/querys/generalConsult';
+import { getModelByName, isExistById } from '@helpers/querys/generalConsult';
 import {
   handlerHttpError,
   typesErrors
@@ -13,15 +9,16 @@ const MUser = getModelByName('user');
 const MRol = getModelByName('rol');
 export const updateRolesAndPermission = async (values) => {
   try {
-    const updatePromiseArray = values.map(async (fieldForUpdate) => {
+    const updatePromiseArray = values.map((fieldForUpdate) => {
       const { id } = fieldForUpdate;
 
-      if (!(await isExistById(id, 'rol'))) {
+      if (!isExistById(id, 'rol')) {
         throw handlerHttpError('invalid role', typesErrors.BAD_REQUEST);
       }
 
-      return await updateElement(fieldForUpdate);
+      return updateElement(fieldForUpdate);
     });
+
     const result = await Promise.all(updatePromiseArray);
 
     if (result) {
@@ -30,6 +27,7 @@ export const updateRolesAndPermission = async (values) => {
         success: true
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error fn: authRoles ${error}`,
@@ -39,17 +37,16 @@ export const updateRolesAndPermission = async (values) => {
 };
 
 export const authDeleteRoles = async (id) => {
-  let updateRolDeleted;
   let result;
 
   try {
-    //
     const exist = await isExistById(id, 'rol');
 
     if (exist) {
-      updateRolDeleted = await MRol.findByIdAndDelete(id);
+      await MRol.findByIdAndDelete(id);
 
-      //encontrar todas las coincidencias para eliminar
+      // encontrar todas las coincidencias para eliminar
+      // eslint-disable-next-line no-underscore-dangle
       result = await MUser.updateMany({ rol: exist._id }, { roll: null });
     }
 
@@ -59,6 +56,7 @@ export const authDeleteRoles = async (id) => {
         success: true
       };
     }
+    return [];
   } catch (error) {
     throw handlerHttpError(
       `Error fn: authDeleteRol ${error}`,

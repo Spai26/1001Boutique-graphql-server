@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { IUserDocument } from '@interfaces/user.interface';
 import { RolModel } from '@models/nosql/roles.models';
 import { UserModel } from '@models/nosql/user.models';
@@ -18,7 +19,7 @@ export const createUser = async (): Promise<IUserDocument> => {
       password: keys.ROOTPASSWORD,
       rol: rol._id
     });
-    //set timer for wait another documents
+    // set timer for wait another documents
     setTimeout(async () => {
       await value.save();
       logger.info(value);

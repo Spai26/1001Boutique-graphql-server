@@ -14,7 +14,7 @@ export const PStoreTypeDefs = gql`
 export const PStoreResolvers = {
   Query: {
     getAllStore: async () => {
-      return await store
+      const listStore = await store
         .find({})
         .populate('onwer')
         .populate('gallery')
@@ -22,9 +22,10 @@ export const PStoreResolvers = {
         .populate('logo')
         .populate('tags')
         .populate('categories');
+      return listStore;
     },
-    getStoreDetail: async (_, { id }) => {
-      return await store
+    getStoreDetail: async (parent, { id }) => {
+      const storeview = await store
         .findById(id)
         .populate('onwer')
         .populate('gallery')
@@ -32,12 +33,12 @@ export const PStoreResolvers = {
         .populate('logo')
         .populate('tags')
         .populate('categories');
+      return storeview;
     },
 
-    searchStoreBytitle: async (_, args) => {
-      console.log(args);
-      const store = await searchByRegex('store', 'title', args.title);
-      return store;
+    searchStoreBytitle: async (parent, args) => {
+      const search = await searchByRegex('store', 'title', args.title);
+      return search;
     }
   }
 };

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   authAttachPermission,
   authDeletePermission,
@@ -13,7 +15,7 @@ export const PermissionResolvers = {
     getAllPermision: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.READ)(
-          async (_, __, context): Promise<IPermission[]> => {
+          async (parent, args, context): Promise<IPermission[]> => {
             return showlist('permission');
           }
         )
@@ -24,8 +26,9 @@ export const PermissionResolvers = {
     createNewPermission: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.CREATE)(
-          async (_: any, { input }, context) => {
-            return await authAttachPermission(input);
+          async (parent, { input }, context) => {
+            const newPermission = await authAttachPermission(input);
+            return newPermission;
           }
         )
       )
@@ -33,8 +36,9 @@ export const PermissionResolvers = {
     updateOnePermission: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.UPDATE)(
-          async (_: any, { input }, context) => {
-            return await authUpdatePermission(input);
+          async (parent, { input }, context) => {
+            const updatePermission = await authUpdatePermission(input);
+            return updatePermission;
           }
         )
       )
@@ -42,7 +46,7 @@ export const PermissionResolvers = {
 
     deletePermissionWithRelation: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.DELETE)(async (_: any, { id }, context) => {
+        hasPermission(PERMISSIONS.DELETE)(async (parent, { id }, context) => {
           return authDeletePermission(id);
         })
       )
