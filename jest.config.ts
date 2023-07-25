@@ -1,6 +1,6 @@
 import type { Config } from 'jest';
 
-const config: Config = {
+export const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   coverageProvider: 'babel',
@@ -14,5 +14,3 @@ const config: Config = {
   },
   verbose: true
 };
-
-export default config;
