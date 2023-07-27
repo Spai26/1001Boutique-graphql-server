@@ -5,12 +5,8 @@ import {
   getModelByName
 } from '@helpers/querys/generalConsult';
 
-import {
-  IBlogDocument,
-  ICtx,
-  ResponseResult,
-  listModel
-} from '@interfaces/index';
+import { IBlogDocument, ResponseResult, listModel } from '@interfaces/index';
+import { ICtx } from '@interfaces/types/context';
 import {
   handlerHttpError,
   typesErrors

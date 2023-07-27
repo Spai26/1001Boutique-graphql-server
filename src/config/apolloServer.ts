@@ -11,11 +11,8 @@ import { GraphQLSchema } from 'graphql';
 
 import { apiRoute } from '@routes/index';
 
-import {
-  getTokenforRequest,
-  IContext,
-  BaseContext
-} from '@middlewares/authorization/apolloContext';
+import { ICtx } from '@interfaces/types/context';
+import { getTokenforRequest } from '@middlewares/authorization/apolloContext';
 import { keys } from './variables';
 import { app } from './server';
 
@@ -25,7 +22,7 @@ export async function startApolloServer(typeDefs, resolvers): Promise<void> {
   //  graphql-tols/schema
   const schema: GraphQLSchema = makeExecutableSchema({ typeDefs, resolvers });
 
-  const server = new ApolloServer<IContext>({
+  const server = new ApolloServer<ICtx>({
     schema,
     introspection: keys.NODE_ENV !== 'production',
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
@@ -42,7 +39,7 @@ export async function startApolloServer(typeDefs, resolvers): Promise<void> {
     cors<cors.CorsRequest>(corsOptions),
     expressMiddleware(server, {
       context: async ({ req, res }) => {
-        const user = (await getTokenforRequest(req)) as BaseContext;
+        const user = await getTokenforRequest(req);
         return { user, req, res };
       }
     })

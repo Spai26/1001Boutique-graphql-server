@@ -8,19 +8,11 @@ import {
 import { CheckVerifyToken } from '@libs/generateJWT';
 import { JwtPayload } from 'jsonwebtoken';
 import { isExistById } from '@helpers/querys/generalConsult';
-import { Request, Response } from 'express';
-import { IUserAuth } from '@interfaces/types/type.custom';
-
-export type BaseContext = {};
-
-export interface IContext {
-  user?: BaseContext | string;
-  req: Request;
-  res: Response;
-}
+import { Request } from 'express';
+import { IUserAuth } from '@interfaces/types/context';
 
 interface customRequest extends Request {
-  user?: any;
+  user?: IUserAuth;
 }
 
 export const getTokenforRequest = async (req: customRequest) => {

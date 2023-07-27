@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { keys } from '@config/variables';
-import { IUserAuth } from '@interfaces/types/type.custom';
+import { IUserAuth } from '@interfaces/types/context';
 import {
   handlerHttpError,
   typesErrors

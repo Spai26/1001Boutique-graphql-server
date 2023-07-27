@@ -1,23 +1,9 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-types */
-import { Request, Response } from 'express';
-
-export type IBaseCtx = {};
 
 export interface IPropsTypes<T> {
   [key: string]: T;
-}
-export interface IUserAuth {
-  id: IPropsTypes<string>;
-  rol: IPropsTypes<string>;
-  alias: IPropsTypes<string>;
-}
-
-export interface ICtx {
-  user?: IUserAuth;
-  req: Request;
-  res: Response;
 }
 
 export enum ROL {

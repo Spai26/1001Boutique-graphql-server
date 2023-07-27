@@ -22,12 +22,14 @@ export const fileFilter = (
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('The file is not a valid image.'));
+    cb(
+      new Error(
+        `The file mimetype '${
+          file.mimetype
+        }' is not allowed. Allowed mimetypes are: ${allowedMimeTypes.join(
+          ', '
+        )}`
+      )
+    );
   }
 };
-
-/**
- * * function take name for file
- * @param filename
- * @returns
- */
