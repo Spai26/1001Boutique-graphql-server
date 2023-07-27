@@ -3,7 +3,8 @@ import { keys } from './variables';
 
 let database: mongoose.Connection;
 
-const connection = keys.NODE_ENV === 'test' ? keys.TEST : keys.URI;
+const connection = keys.NODE_ENV !== 'production' ? keys.TEST : keys.URI;
+
 export const connectionDB = async () => {
   if (database) {
     return;
