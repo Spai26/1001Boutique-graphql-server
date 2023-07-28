@@ -19,7 +19,7 @@
       "@libs/*": ["src/libs/*"],
       "@helpers/*": ["src/helpers/*"],
       "@utils/*": ["src/utils/*"],
-      "@repositories/*": ["src/respositories/*"]
+      "@repositories/*": ["src/repositories/*"]
     },
     "typeRoots": ["src/@types", "./node_modules/@types"],
     "allowJs": true,
