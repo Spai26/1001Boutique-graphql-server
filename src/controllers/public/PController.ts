@@ -22,7 +22,7 @@ export const incrementViewAndFetchBlogById = async (
   const model = getModelByName(modelName);
   try {
     const update = await incrementViewModelbyId(modelName, id);
-
+    console.log(update);
     if (update.modifiedCount) {
       return await model
         .findById(id)
