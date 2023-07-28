@@ -25,7 +25,8 @@ module.exports = {
           '@middlewares': './src/middlewares',
           '@libs': './src/libs',
           '@helpers': './src/helpers',
-          '@utils': './src/utils'
+          '@utils': './src/utils',
+          '@repositories/*': './src/respositories/*'
         }
       }
     ]

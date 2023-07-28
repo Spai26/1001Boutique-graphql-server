@@ -18,7 +18,8 @@
       "@controllers/*": ["src/controllers/*"],
       "@libs/*": ["src/libs/*"],
       "@helpers/*": ["src/helpers/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@repositories/*": ["src/respositories/*"]
     },
     "typeRoots": ["src/@types", "./node_modules/@types"],
     "allowJs": true,
