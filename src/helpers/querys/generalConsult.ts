@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IPropsTypes, listModel } from '@interfaces/index';
+import { Model as MongooseModel } from 'mongoose';
 
 import {
   BlogModel,
@@ -14,8 +15,9 @@ import {
   UserModel
 } from '@models/nosql';
 
-import { Model as MongooseModel } from 'mongoose';
+import { UserRepository } from '@repositories/repository';
 
+const User = new UserRepository(UserModel);
 let Model;
 
 export interface findOptions {
@@ -180,5 +182,15 @@ export const incrementViewModelbyId = async (modelname, id) => {
     { _id: id },
     { $inc: { count_view: 1 } }
   );
+
   return updateDoc;
+};
+
+export const addBlogToArray = async (ctx, value) => {
+  const { id } = ctx.user;
+  const user = await User.populateByContext(id);
+
+  user.blogs = user.blogs.concat(value);
+  const result = user.save();
+  return result;
 };

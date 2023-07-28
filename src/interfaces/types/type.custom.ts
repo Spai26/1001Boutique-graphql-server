@@ -2,6 +2,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-types */
 
+import { IBlog } from '../blog.interface';
+
 export interface IPropsTypes<T> {
   [key: string]: T;
 }
@@ -38,4 +40,8 @@ export interface listModel {
 export interface ResponseResult {
   message: string;
   success: boolean;
+}
+
+export interface ResponseModel extends ResponseResult {
+  blog: IBlog;
 }

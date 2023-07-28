@@ -8,7 +8,7 @@ enum imageTypes {
   LOGO = 'logo'
 }
 
-export interface IImage {
+export interface IImage extends Document {
   url: string;
   model_id: mongoose.Types.ObjectId;
   model_type: imageTypes;

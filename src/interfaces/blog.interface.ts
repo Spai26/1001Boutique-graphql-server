@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 
-export interface IBlog {
+export interface IBlog extends Document {
   title: string;
   body_content: string;
   front_image: mongoose.Types.ObjectId; // ref 'image'
@@ -10,5 +10,3 @@ export interface IBlog {
   status: boolean;
   origin: string;
 }
-
-export interface IBlogDocument extends IBlog, Document {}

@@ -1,10 +1,10 @@
 import slug from 'mongoose-slug-generator';
-import { IBlog, IBlogDocument } from '@interfaces/blog.interface';
-import mongoose, { Model, Schema, model } from 'mongoose';
+import { IBlog } from '@interfaces/blog.interface';
+import mongoose, { Schema, model } from 'mongoose';
 
 mongoose.plugin(slug);
 
-const BlogSchema = new Schema<IBlogDocument, Model<IBlog>>(
+const BlogSchema = new Schema<IBlog>(
   {
     title: { type: String, require: true, unique: true },
     body_content: { type: String, require: true },
@@ -23,4 +23,4 @@ const BlogSchema = new Schema<IBlogDocument, Model<IBlog>>(
   }
 );
 
-export const BlogModel = model<IBlogDocument, Model<IBlog>>('Blog', BlogSchema);
+export const BlogModel = model<IBlog>('Blog', BlogSchema);
