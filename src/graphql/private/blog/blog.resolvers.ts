@@ -2,61 +2,61 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
+import { deleteBlogCtr } from '@controllers/auth/auth.blog.controller';
 import {
-  attachInDBwithSingleImage,
-  deleteBlogCtr,
-  detailBlogCtr,
-  showListBlogCtr,
-  updateBlogCtr,
-  updateBlogImageCtr,
-  updateStatusBlogCtr
-} from '@controllers/auth/auth.blog.controller';
+  createBlog,
+  detailBlog,
+  getLisBlogsCreated,
+  updateFieldImageInBlog,
+  updateFieldStatusBlog,
+  updateFieldTextBlog
+} from '@controllers/blog';
 
 export const BlogResolvers = {
   Query: {
     getAllOnwerBlogs: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.READ)((parent, args, context) => {
-          return showListBlogCtr(context);
+          return getLisBlogsCreated(context);
         })
       )
     ),
     getBlogbyIdOnwer: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)(async (parent, { id }, context) => {
-          return detailBlogCtr(id);
+        hasPermission(PERMISSIONS.READ)((parent, { id }, context) => {
+          return detailBlog(id, context);
         })
       )
     )
   },
   Mutation: {
-    newBlog: authMiddleware(
+    attachNewBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.CREATE)(
           async (parent, { input }, context) => {
-            return attachInDBwithSingleImage(input, context, 'blog');
+            return createBlog(input, context);
           }
         )
       )
     ),
     updateMyBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
-          return updateBlogCtr(args);
+        hasPermission(PERMISSIONS.UPDATE)((parent, args, context) => {
+          return updateFieldTextBlog(args);
         })
       )
     ),
     updateBlogImage: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
-          return updateBlogImageCtr(args);
+        hasPermission(PERMISSIONS.UPDATE)((parent, args, context) => {
+          return updateFieldImageInBlog(args);
         })
       )
     ),
     updateStatusBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.UPDATE)((parent, args, context) => {
-          return updateStatusBlogCtr(args);
+          return updateFieldStatusBlog(args);
         })
       )
     ),

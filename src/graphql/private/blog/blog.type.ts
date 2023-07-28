@@ -7,7 +7,7 @@ export const BlogTypeDefs = gql`
     getBlogbyIdOnwer(id: ID!): Blog
   }
   extend type Mutation {
-    newBlog(input: blogCreationInput): Response
+    attachNewBlog(input: blogCreationInput): BlogResponse
     updateMyBlog(id: ID!, input: blogUpdateInput!): Response
     updateStatusBlog(id: ID!, status: Boolean!): Response
     updateBlogImage(id: ID!, input: ImageUpdateInput): Response
@@ -43,6 +43,11 @@ export const BlogTypeDefs = gql`
     author: PUser
     createdAt: String
     updatedAt: String
+  }
+  type BlogResponse {
+    success: Boolean
+    message: String
+    blog: Blog
   }
 
   #slug / origin / author autogenerate
