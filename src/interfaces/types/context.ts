@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import { IPropsTypes } from './type.custom';
+import { Types } from 'mongoose';
 
 export interface IUserAuth {
-  id: IPropsTypes<string>;
-  rol: IPropsTypes<string>;
-  alias: IPropsTypes<string>;
+  id: string;
+  rol: Types.ObjectId;
+  alias: string;
+  blogs?: Array<Types.ObjectId>;
 }
 
 export interface ICtx {

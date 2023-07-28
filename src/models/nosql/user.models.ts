@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
-import { IUserDocument, IUserModel } from '@interfaces/index';
+import { IUser, IUserDocument, IUserModel } from '@interfaces/index';
 
-const UserSchema = new Schema<IUserDocument, IUserModel>(
+const UserSchema = new Schema<IUser>(
   {
     firstname: { type: String, require: true },
     lastname: { type: String, require: true },
@@ -12,6 +12,7 @@ const UserSchema = new Schema<IUserDocument, IUserModel>(
     website: { type: String, default: null },
     password: { type: String, require: true },
     rol: { type: Schema.Types.ObjectId, ref: 'Role' },
+    blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }],
     brands: [{ brandName: String }],
     stores: [{ storeName: String }]
   },

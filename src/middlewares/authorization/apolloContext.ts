@@ -7,10 +7,12 @@ import {
 } from '@middlewares/handlerErrorsApollo';
 import { CheckVerifyToken } from '@libs/generateJWT';
 import { JwtPayload } from 'jsonwebtoken';
-import { isExistById } from '@helpers/querys/generalConsult';
 import { Request } from 'express';
 import { IUserAuth } from '@interfaces/types/context';
+import { UserRepository } from '@repositories/repository';
+import { UserModel } from '@models/nosql';
 
+const User = new UserRepository(UserModel);
 interface customRequest extends Request {
   user?: IUserAuth;
 }
@@ -23,15 +25,16 @@ export const getTokenforRequest = async (req: customRequest) => {
       token = req.headers.authorization.split(' ').pop();
 
       if (token) {
-        const payload: JwtPayload = await CheckVerifyToken(token);
+        const { id }: JwtPayload = await CheckVerifyToken(token);
 
-        currentUser = await isExistById(payload.id, 'user');
+        currentUser = await User.getById(id);
       }
 
       const user: IUserAuth = {
         id: currentUser._id,
         rol: currentUser.rol,
-        alias: currentUser.username
+        alias: currentUser.username,
+        blogs: currentUser.blogs
       };
 
       req.user = user;

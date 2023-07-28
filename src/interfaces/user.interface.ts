@@ -2,8 +2,9 @@
 import mongoose, { Document, Model } from 'mongoose';
 import { IBrand } from './brand.interface';
 import { IStore } from './store.interface';
+import { IBlog } from './blog.interface';
 
-export interface IUser {
+export interface IUser extends Document {
   firstname: string;
   lastname: string;
   email: string;
@@ -12,6 +13,7 @@ export interface IUser {
   website?: string;
   password: string;
   rol: mongoose.Types.ObjectId; // ref 'rol'
+  blogs?: Array<mongoose.Types.ObjectId | IBlog>;
   brands?: mongoose.Types.DocumentArray<IBrand>;
   stores?: mongoose.Types.DocumentArray<IStore>;
 }
