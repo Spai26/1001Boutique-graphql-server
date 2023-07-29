@@ -1,22 +1,13 @@
-import {
-  createNewDocument,
-  existFields,
-  getModelByName,
-  isExistById,
-  updateOneElement
-} from '@helpers/querys/generalConsult';
+/* eslint-disable no-underscore-dangle */
 import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
-import { keyValueData } from '@utils/typesCustom';
+import { permissionRepository, rolRepository } from '@repositories/repository';
 
-const MPermission = getModelByName('permission');
-const MRol = getModelByName('rol');
-
-export const authAttachPermission = async (values: keyValueData<string>) => {
+export const authAttachPermission = async (values) => {
   try {
-    const isExist = await existFields('permission', { name: values.name });
+    const isExist = await permissionRepository.getByOne({ name: values.name });
 
     if (isExist) {
       throw handlerHttpError(
@@ -25,14 +16,12 @@ export const authAttachPermission = async (values: keyValueData<string>) => {
       );
     }
 
-    const newvalue = await createNewDocument(values, 'permission');
+    const newvalue = await permissionRepository.create(values);
 
-    const result = await newvalue.save();
-
-    if (result) {
+    if (newvalue) {
       return {
         message: 'Permission add!',
-        success: true
+        success: !!newvalue
       };
     }
     return [];
@@ -44,21 +33,16 @@ export const authAttachPermission = async (values: keyValueData<string>) => {
   }
 };
 
-export const authUpdatePermission = async (values: keyValueData<string>) => {
+export const authUpdatePermission = async (values) => {
   try {
     const { id } = values;
-    const isExist = await isExistById(id, 'permission');
+    const isExist = await permissionRepository.getById(id);
 
     if (!isExist) {
       throw handlerHttpError('invalid permission', typesErrors.BAD_REQUEST);
     }
 
-    const result = await updateOneElement(
-      // eslint-disable-next-line no-underscore-dangle
-      { _id: isExist._id },
-      values,
-      'permission'
-    );
+    const result = await permissionRepository.update(isExist._id, values);
 
     if (result) {
       return {
@@ -75,12 +59,12 @@ export const authUpdatePermission = async (values: keyValueData<string>) => {
   }
 };
 
-export const authDeletePermission = async (id: keyValueData<string>[]) => {
+export const authDeletePermission = async (id) => {
   let updatePermissionDeleted = null;
 
   try {
     const deletePromiseArray = id.map((data) => {
-      return MPermission.findByIdAndDelete({ _id: data });
+      return permissionRepository.delete(data);
     });
 
     const result = await Promise.all(deletePromiseArray);
@@ -90,7 +74,7 @@ export const authDeletePermission = async (id: keyValueData<string>[]) => {
     }
 
     if (result) {
-      updatePermissionDeleted = await MRol.updateMany(
+      updatePermissionDeleted = await rolRepository.updateMany(
         {
           permissions: { $in: id }
         },

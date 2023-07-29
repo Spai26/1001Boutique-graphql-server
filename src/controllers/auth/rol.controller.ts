@@ -1,18 +1,18 @@
+/* eslint-disable no-underscore-dangle */
 import { updateElement } from '@helpers/querys/RolesandPermisions.query';
-import { getModelByName, isExistById } from '@helpers/querys/generalConsult';
+
 import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
+import { userRepository, rolRepository } from '@repositories/repository';
 
-const MUser = getModelByName('user');
-const MRol = getModelByName('rol');
 export const updateRolesAndPermission = async (values) => {
   try {
     const updatePromiseArray = values.map((fieldForUpdate) => {
       const { id } = fieldForUpdate;
-
-      if (!isExistById(id, 'rol')) {
+      const findRol = rolRepository.getById(id);
+      if (!findRol) {
         throw handlerHttpError('invalid role', typesErrors.BAD_REQUEST);
       }
 
@@ -24,7 +24,7 @@ export const updateRolesAndPermission = async (values) => {
     if (result) {
       return {
         message: 'fields updated!',
-        success: true
+        success: !!result
       };
     }
     return [];
@@ -36,24 +36,24 @@ export const updateRolesAndPermission = async (values) => {
   }
 };
 
-export const authDeleteRoles = async (id) => {
+export const authDeleteRoles = async (id: string) => {
   let result;
 
   try {
-    const exist = await isExistById(id, 'rol');
+    const exist = await rolRepository.getById(id);
 
     if (exist) {
-      await MRol.findByIdAndDelete(id);
-
-      // encontrar todas las coincidencias para eliminar
-      // eslint-disable-next-line no-underscore-dangle
-      result = await MUser.updateMany({ rol: exist._id }, { roll: null });
+      await rolRepository.delete(id);
+      result = await userRepository.updateMany(
+        { rol: exist._id },
+        { roll: null }
+      );
     }
 
     if (result) {
       return {
         message: 'fields deleted!',
-        success: true
+        success: !!result
       };
     }
     return [];

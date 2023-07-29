@@ -18,3 +18,15 @@ export const generateSlug = (data: string): string => {
     .replace(/[^\w ]+/g, '')
     .replace(/ +/g, '-');
 };
+
+/**
+ * * Verifica si la lista es un array valido
+ * @param elements
+ * @returns Boolean
+ */
+export const checkArrayElement = (elements) => {
+  if (Array.isArray(elements) && elements.length > 0) {
+    return true;
+  }
+  return false;
+};

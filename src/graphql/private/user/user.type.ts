@@ -10,7 +10,7 @@ export const UserTypeDefs = gql`
 
   #Mutation list
   extend type Mutation {
-    createUser(input: createNewUser): Response
+    attachNewUser(input: createNewUser): Response
     updateUser(input: updateuserExist): Response
     changePassword(password: String!): Response
     deletedUser(id: ID!): String

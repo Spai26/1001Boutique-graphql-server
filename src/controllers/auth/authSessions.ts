@@ -1,15 +1,15 @@
-import { existFields } from '@helpers/querys/generalConsult';
 import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
-import { UserModel } from '@models/nosql/user.models';
+import { UserModel } from '@models/nosql';
+import { userRepository } from '@repositories/repository';
 
 export const authLoginController = async (values) => {
   const { email, password } = values;
 
   try {
-    const isValidUser = await existFields('user', { email });
+    const isValidUser = await userRepository.getByOne({ email });
 
     if (!isValidUser) {
       throw handlerHttpError(

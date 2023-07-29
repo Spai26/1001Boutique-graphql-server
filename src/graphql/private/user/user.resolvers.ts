@@ -1,70 +1,78 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { IRol } from '@interfaces/rol.interface';
-import { getModelByName } from '@helpers/querys/generalConsult';
 import {
-  attachUserInDB,
+  createControllerUser,
   deleteWithAllRelations,
-  getUserForId,
   updateControllerUser
-} from '@controllers/auth/auth.user.controller';
+} from '@controllers/auth';
 import {
   hasRol,
   hasPermission,
   authMiddleware
 } from '@middlewares/access/index';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
+import {
+  handlerHttpError,
+  typesErrors
+} from '@middlewares/handlerErrorsApollo';
+import { userRepository } from '@repositories/repository';
 
-const user = getModelByName('user');
 export const UserResolvers = {
   Query: {
     getAllUsers: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)(async (parent, args, context) => {
-          const allUser = await user.find({}).populate<{ rol: IRol }>({
-            path: 'rol',
-            populate: {
-              path: 'permissions'
-            }
-          });
-          return allUser;
+        hasPermission(PERMISSIONS.READ)((parent, args, context) => {
+          return userRepository
+            .populateWithSubDocument()
+            .then((data) => {
+              return data;
+            })
+            .catch((error) => {
+              throw handlerHttpError(
+                `Error fn: allUser ${error}`,
+                typesErrors.DATABASE_ERROR
+              );
+            });
         })
       )
     ),
 
-    searchUserforEmail: async (parent, { email }) => {
-      const userByid = await getUserForId(email);
-      return userByid;
+    searchUserforEmail: (parent, { email }) => {
+      return userRepository
+        .getByOne({ email })
+        .then((data) => {
+          return data;
+        })
+        .catch((error) => {
+          throw handlerHttpError(
+            `Error fn: searchUser ${error}`,
+            typesErrors.DATABASE_ERROR
+          );
+        });
     }
   },
 
   Mutation: {
-    createUser: authMiddleware(
+    attachNewUser: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.CREATE)(
-          async (parent, { input }, context) => {
-            const newUser = await attachUserInDB(input);
-            return newUser;
-          }
-        )
+        hasPermission(PERMISSIONS.CREATE)((parent, { input }, context) => {
+          return createControllerUser(input);
+        })
       )
     ),
 
     updateUser: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(
-          async (parent, { input }, context) => {
-            const updateUser = await updateControllerUser(input);
-            return updateUser;
-          }
-        )
+        hasPermission(PERMISSIONS.UPDATE)((parent, { input }, context) => {
+          return updateControllerUser(input);
+        })
       )
     ),
 
     // eliminar los blogs relacionados por terminar
     deletedUser: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.DELETE)(async (parent, { id }, context) => {
+        hasPermission(PERMISSIONS.DELETE)((parent, { id }, context) => {
           return deleteWithAllRelations(id);
         })
       )

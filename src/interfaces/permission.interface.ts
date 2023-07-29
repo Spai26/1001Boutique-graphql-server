@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export interface IPermission {
+export interface IPermission extends Document {
   name: string;
   description?: string;
 }

@@ -4,21 +4,36 @@ import {
   authAttachPermission,
   authDeletePermission,
   authUpdatePermission
-} from '@controllers/auth/auth.permission.controller';
-import { showlist } from '@helpers/querys/generalConsult';
-import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
+} from '@controllers/auth';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
-import { IPermission } from '@interfaces/permission.interface';
+
+import { permissionRepository } from '@repositories/repository';
+import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
+import {
+  handlerHttpError,
+  typesErrors
+} from '@middlewares/handlerErrorsApollo';
 
 export const PermissionResolvers = {
   Query: {
     getAllPermision: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.READ)(
-          async (parent, args, context): Promise<IPermission[]> => {
-            return showlist('permission');
-          }
-        )
+        hasPermission(PERMISSIONS.READ)((parent, args, context) => {
+          return permissionRepository
+            .getAll()
+            .then((data) => {
+              if (data) {
+                return data;
+              }
+              return [];
+            })
+            .catch((error) => {
+              throw handlerHttpError(
+                `Error fn: allpermission ${error}`,
+                typesErrors.DATABASE_ERROR
+              );
+            });
+        })
       )
     )
   },

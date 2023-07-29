@@ -9,10 +9,8 @@ import { CheckVerifyToken } from '@libs/generateJWT';
 import { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
 import { IUserAuth } from '@interfaces/types/context';
-import { UserRepository } from '@repositories/repository';
-import { UserModel } from '@models/nosql';
+import { userRepository } from '@repositories/repository';
 
-const User = new UserRepository(UserModel);
 interface customRequest extends Request {
   user?: IUserAuth;
 }
@@ -27,7 +25,7 @@ export const getTokenforRequest = async (req: customRequest) => {
       if (token) {
         const { id }: JwtPayload = await CheckVerifyToken(token);
 
-        currentUser = await User.getById(id);
+        currentUser = await userRepository.getById(id);
       }
 
       const user: IUserAuth = {

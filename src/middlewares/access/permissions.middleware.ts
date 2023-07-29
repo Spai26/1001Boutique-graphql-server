@@ -1,16 +1,19 @@
 import { keys } from '@config/variables';
-import { isExistById } from '@helpers/querys/generalConsult';
+
 import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
+
+import { rolRepository } from '@repositories/repository';
 
 export const hasPermission =
   (allowenPermission: string) =>
   (next) =>
   async (parent, args, context, info) => {
     const { rol } = context.user;
-    const currentRol = await isExistById(rol, 'rol', 'permissions');
+
+    const currentRol = await rolRepository.getById(rol);
 
     if (currentRol.name === keys.ROOTROL) {
       return next(parent, args, context, info);

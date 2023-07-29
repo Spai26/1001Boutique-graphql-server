@@ -1,22 +1,11 @@
 /* eslint-disable no-underscore-dangle */
-import { RolModel } from '@models/nosql/roles.models';
-import { PermisionModel } from '@models/nosql/permission.models';
+
 import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
-
-/**
- * * Verifica si la lista es un array valido
- * @param elements
- * @returns Boolean
- */
-export const checkArrayElement = (elements) => {
-  if (Array.isArray(elements) && elements.length > 0) {
-    return true;
-  }
-  return false;
-};
+import { permissionRepository, rolRepository } from '@repositories/repository';
+import { checkArrayElement } from '@utils/textManipulation';
 
 /**
  * * Compara la lista de permisos coincide con los ingresados
@@ -27,7 +16,7 @@ export const assignPermissions = async (
   listpermissions: string[]
 ): Promise<string | boolean> => {
   // find all permissions[]
-  const search_permissions_list = await PermisionModel.find({
+  const search_permissions_list = await permissionRepository.getAllWithOption({
     _id: { $in: listpermissions }
   });
 
@@ -56,13 +45,14 @@ export const updateElement = async (elements) => {
   let result;
   const { id, name, description, permissions } = elements;
 
-  const validArray = await checkArrayElement(permissions);
+  const validArray = checkArrayElement(permissions);
 
   if (validArray) {
+    // TODO: lista de permisos
     const valid_Array_Permission = await assignPermissions(permissions);
 
     if (valid_Array_Permission) {
-      result = await RolModel.findByIdAndUpdate(id, {
+      result = await rolRepository.update(id, {
         name,
         description,
         permissions
@@ -70,7 +60,7 @@ export const updateElement = async (elements) => {
     }
   }
 
-  result = await RolModel.findByIdAndUpdate(id, { name, description });
+  result = await rolRepository.update(id, { name, description });
 
   return result;
 };
