@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
-import { deleteBlogCtr } from '@controllers/auth/auth.blog.controller';
 import {
   createBlog,
+  deleteBlog,
   detailBlog,
   getLisBlogsCreated,
   updateFieldImageInBlog,
@@ -64,7 +64,7 @@ export const BlogResolvers = {
     deleteMyBlog: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.DELETE)((parent, { id }, context) => {
-          return deleteBlogCtr(id);
+          return deleteBlog(id);
         })
       )
     )
