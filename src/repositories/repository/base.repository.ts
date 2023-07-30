@@ -55,6 +55,10 @@ export class BaseRepository<T extends Document> {
     return this.model.deleteOne(conditions);
   }
 
+  async deleteMany(conditions: FilterQuery<T>) {
+    return this.model.deleteMany(conditions);
+  }
+
   async searchByField(field: string, text: string) {
     const query = {};
     query[field] = { $regex: text, $options: 'i' };

@@ -1,39 +1,29 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {
-  createNewStoreDocument,
-  deleteStoreCtr,
-  updateStoreImages
-} from '@controllers/auth/auth.store.controller';
-import { getModelByName } from '@helpers/querys';
+  createStore,
+  deleteStore,
+  detailStore,
+  updateImageStore,
+  updateTextStore
+} from '@controllers/store';
 import { PERMISSIONS, ROL } from '@interfaces/index';
-
 import { authMiddleware, hasPermission, hasRol } from '@middlewares/access';
-import { generateSlug } from '@utils/textManipulation';
+import { storeRepository } from '@repositories/repository';
 
-const store = getModelByName('store');
 export const StoreResolvers = {
   Query: {
     getAllOnwerStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.READ)(async (parent, args, context) => {
           const { id } = context.user;
-
-          const data = store
-            .find({ onwer: id })
-            .populate('logo')
-            .populate('onwer')
-            .populate('tags')
-            .populate('categories')
-            .populate('main_image')
-            .populate('gallery');
-
-          return data;
+          return storeRepository.getAllWithPopulationOnwer(id);
         })
       )
     ),
-    getDetailStore: async () => {
-      return 'hello';
+    getStorebyIdOnwer: async (parent, { id }, context) => {
+      return detailStore(id, context);
     }
   },
   Mutation: {
@@ -41,7 +31,7 @@ export const StoreResolvers = {
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.CREATE)(
           async (parent, { input }, context) => {
-            return createNewStoreDocument(input, context);
+            return createStore(input, context);
           }
         )
       )
@@ -49,15 +39,7 @@ export const StoreResolvers = {
     updateMyStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
-          const { id } = args;
-          const { title, ...resInput } = args.input;
-
-          const update = await store.findByIdAndUpdate(id, {
-            title,
-            slug: generateSlug(title),
-            ...resInput
-          });
-          return update;
+          return updateTextStore(args);
         })
       )
     ),
@@ -65,16 +47,14 @@ export const StoreResolvers = {
     updateAnyImageOnStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
-          const updateImages = await updateStoreImages(args);
-          return updateImages;
+          return updateImageStore(args);
         })
       )
     ),
     deleteMyStore: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.DELETE)(async (parent, { id }, context) => {
-          const deleteImages = await deleteStoreCtr(id);
-          return deleteImages;
+          return deleteStore(id);
         })
       )
     )

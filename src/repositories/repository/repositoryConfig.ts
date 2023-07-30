@@ -6,6 +6,7 @@ import {
   ImageModel,
   PermisionModel,
   RolModel,
+  StoreModel,
   TagModel,
   UserModel
 } from '@models/nosql';
@@ -15,6 +16,7 @@ import { RolRepository } from './rol.repository';
 import { BlogRepository } from './blog.repository';
 import { BrandRepository } from './brand.repository';
 import { ImageRepository } from './image.repository';
+import { StoreRepository } from './store.repository';
 
 export const userRepository = new UserRepository(UserModel);
 export const blogRepository = new BlogRepository(BlogModel);
@@ -26,3 +28,4 @@ export const categoryRepository = new BaseRepository<ICategory>(CategoryModel);
 export const tagRepository = new BaseRepository<ITag>(TagModel);
 export const brandRepository = new BrandRepository(BrandModel);
 export const imageRepository = new ImageRepository(ImageModel);
+export const storeRepository = new StoreRepository(StoreModel);

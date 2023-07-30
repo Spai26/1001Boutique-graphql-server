@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ICtx, IPropsTypes, listModel } from '@interfaces/index';
+import { ICtx, IPropsTypes, listModel, listNameArray } from '@interfaces/index';
 import { Model as MongooseModel } from 'mongoose';
 
 import {
@@ -52,10 +52,7 @@ export const getModelByName = (
   return listModels[model];
 };
 
-export const existDocById = async (
-  modelname: keyof listModel,
-  id: IPropsTypes<string>
-) => {
+export const existDocById = async (modelname: keyof listModel, id) => {
   const model = getModelByName(modelname);
   const exist = await model.findById(id);
   return exist;
@@ -185,19 +182,14 @@ export const incrementViewModelbyId = async (modelname, id) => {
   return updateDoc;
 };
 
-export const addBlogToArray = async (ctx, value) => {
-  const { id } = ctx.user;
-  const user = await userRepository.populateByContext(id);
-
-  user.blogs = user.blogs.concat(value);
-  const result = user.save();
-  return result;
-};
-
-export const addToArray = async (ctx: ICtx, value, field: string) => {
+export const addToArray = async (
+  ctx: ICtx,
+  value, // string
+  field: keyof listNameArray
+) => {
   const { id } = ctx.user;
   const user = await userRepository.getById(id);
-
+  console.log(value);
   const fileds_options = {
     blogs: () => user.blogs.push(value),
     brands: () => user.brands.push(value),

@@ -7,6 +7,7 @@ export interface IUserAuth {
   alias: string;
   blogs?: Array<Types.ObjectId>;
   brands?: Array<Types.ObjectId>;
+  stores?: Array<Types.ObjectId>;
 }
 
 export interface ICtx {

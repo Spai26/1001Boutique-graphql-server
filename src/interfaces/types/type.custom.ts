@@ -5,6 +5,8 @@
 import { ICategory } from '../category.interface';
 import { IBlog } from '../blog.interface';
 import { IBrand } from '../brand.interface';
+import { ITag } from '../tag.interfaces';
+import { IStore } from '../store.interface';
 
 export interface IPropsTypes<T> {
   [key: string]: T;
@@ -39,11 +41,17 @@ export interface listModel {
   test: string;
 }
 
+export interface listNameArray {
+  blogs: string;
+  stores: string;
+  brands: string;
+}
+
 export interface ResponseResult {
   message: string;
   success: boolean;
 }
 
 export interface ResponseModel extends ResponseResult {
-  result?: IBlog | ICategory | IBrand;
+  result?: IBlog | ICategory | IBrand | IStore | ITag;
 }

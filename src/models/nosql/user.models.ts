@@ -14,7 +14,7 @@ const UserSchema = new Schema<IUser>(
     rol: { type: Schema.Types.ObjectId, ref: 'Role' },
     blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }],
     brands: [{ type: Schema.Types.ObjectId, ref: 'Brand' }],
-    stores: [{ storeName: String }]
+    stores: [{ type: Schema.Types.ObjectId, ref: 'Store' }]
   },
   {
     toJSON: { virtuals: true },

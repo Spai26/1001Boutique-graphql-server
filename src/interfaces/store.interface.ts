@@ -14,7 +14,7 @@ interface Social {
   name_social: string;
   url: string;
 }
-export interface IStore {
+export interface IStore extends Document {
   title: string;
   sub_title: string;
   slug: string;

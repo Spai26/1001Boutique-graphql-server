@@ -4,14 +4,14 @@ export const StoreTypeDefs = gql`
   extend type Query {
     #para evitar errores
     getAllOnwerStore: [Store]
-    getDetailStore(id: ID!): Store
+    getStorebyIdOnwer(id: ID!): Store
   }
 
   extend type Mutation {
-    attachNewStore(input: storeCreationInput): Response
-    updateMyStore(id: ID!, input: storeUpdateInput): Response
-    updateAnyImageOnStore(id: ID!, input: storeUpdateImageInput): Response
-    deleteMyStore(id: ID!): Response
+    attachNewStore(input: storeCreationInput): StoreResponse
+    updateMyStore(id: ID!, input: storeUpdateInput): StoreResponse
+    updateAnyImageOnStore(id: ID!, input: storeUpdateImageInput): StoreResponse
+    deleteMyStore(id: ID!): StoreResponse
   }
 
   #Model schema
@@ -88,7 +88,7 @@ export const StoreTypeDefs = gql`
     sub_title: String!
     description: String!
     main_image: ImageInput!
-    logo: ImageInput
+    logo: ImageInput!
     phone: String
     address: String!
     positionX: String!
@@ -100,7 +100,7 @@ export const StoreTypeDefs = gql`
     email: String
     socials: [SocialInput]
     times_tables: [TimesInput]
-    gallery: [ImageInput]
+    gallery: [ImageInput]!
     categories: [ID!]
     tags: [ID!]
   }
@@ -140,5 +140,11 @@ export const StoreTypeDefs = gql`
     main_image: ImageUpdateInput
     logo: ImageUpdateInput
     gallery: [ImageUpdateInput]
+  }
+
+  type StoreResponse {
+    message: String
+    success: Boolean
+    result: Store
   }
 `;
