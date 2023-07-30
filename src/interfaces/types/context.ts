@@ -6,6 +6,7 @@ export interface IUserAuth {
   rol: Types.ObjectId;
   alias: string;
   blogs?: Array<Types.ObjectId>;
+  brands?: Array<Types.ObjectId>;
 }
 
 export interface ICtx {

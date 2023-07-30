@@ -32,7 +32,8 @@ export const getTokenforRequest = async (req: customRequest) => {
         id: currentUser._id,
         rol: currentUser.rol,
         alias: currentUser.username,
-        blogs: currentUser.blogs
+        blogs: currentUser.blogs,
+        brands: currentUser.brands
       };
 
       req.user = user;

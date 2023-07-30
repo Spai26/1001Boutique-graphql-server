@@ -13,7 +13,7 @@ const UserSchema = new Schema<IUser>(
     password: { type: String, require: true },
     rol: { type: Schema.Types.ObjectId, ref: 'Role' },
     blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }],
-    brands: [{ brandName: String }],
+    brands: [{ type: Schema.Types.ObjectId, ref: 'Brand' }],
     stores: [{ storeName: String }]
   },
   {

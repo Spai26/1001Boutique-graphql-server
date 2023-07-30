@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IPropsTypes, listModel } from '@interfaces/index';
+import { ICtx, IPropsTypes, listModel } from '@interfaces/index';
 import { Model as MongooseModel } from 'mongoose';
 
 import {
@@ -15,9 +15,8 @@ import {
   UserModel
 } from '@models/nosql';
 
-import { UserRepository } from '@repositories/repository';
+import { userRepository } from '@repositories/repository';
 
-const User = new UserRepository(UserModel);
 let Model;
 
 export interface findOptions {
@@ -188,9 +187,26 @@ export const incrementViewModelbyId = async (modelname, id) => {
 
 export const addBlogToArray = async (ctx, value) => {
   const { id } = ctx.user;
-  const user = await User.populateByContext(id);
+  const user = await userRepository.populateByContext(id);
 
   user.blogs = user.blogs.concat(value);
   const result = user.save();
+  return result;
+};
+
+export const addToArray = async (ctx: ICtx, value, field: string) => {
+  const { id } = ctx.user;
+  const user = await userRepository.getById(id);
+
+  const fileds_options = {
+    blogs: () => user.blogs.push(value),
+    brands: () => user.brands.push(value),
+    stores: () => user.stores.push(value)
+  };
+  // TODO: ejecutamos la funcion
+  if (fileds_options[field]) {
+    fileds_options[field]();
+  }
+  const result = await user.save();
   return result;
 };

@@ -4,6 +4,7 @@
 
 import { ICategory } from '../category.interface';
 import { IBlog } from '../blog.interface';
+import { IBrand } from '../brand.interface';
 
 export interface IPropsTypes<T> {
   [key: string]: T;
@@ -44,6 +45,5 @@ export interface ResponseResult {
 }
 
 export interface ResponseModel extends ResponseResult {
-  blog?: IBlog;
-  category?: ICategory;
+  result?: IBlog | ICategory | IBrand;
 }
