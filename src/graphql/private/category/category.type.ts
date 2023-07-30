@@ -8,19 +8,20 @@ export const CategoryTypeDefs = gql`
   extend type Mutation {
     _: String
     #nameorDescInput ref: generalSchema
-    newCategory(input: NameOrDescInput): Response
-    updatedCategory(input: NameAndDescPatchInput): Response
-    deletedCategory(id: ID!): Response
-  }
-
-  #for search
-  type SearchCategory {
-    nameCat: String!
+    newCategory(input: NameOrDescInput): CategoryResponse
+    updatedCategory(input: NameAndDescPatchInput): CategoryResponse
+    deletedCategory(id: ID!): CategoryResponse
   }
 
   type Category {
     id: ID
     name: String!
     slug: String
+  }
+
+  type CategoryResponse {
+    message: String
+    success: Boolean
+    result: Category
   }
 `;

@@ -1,5 +1,12 @@
-import { IPermission } from '@interfaces/permission.interface';
-import { BlogModel, PermisionModel, RolModel, UserModel } from '@models/nosql';
+import { IPermission, ICategory, ITag } from '@interfaces/index';
+import {
+  BlogModel,
+  CategoryModel,
+  PermisionModel,
+  RolModel,
+  TagModel,
+  UserModel
+} from '@models/nosql';
 import { BaseRepository } from './base.repository';
 import { UserRepository } from './user.repository';
 import { RolRepository } from './rol.repository';
@@ -11,3 +18,5 @@ export const rolRepository = new RolRepository(RolModel);
 export const permissionRepository = new BaseRepository<IPermission>(
   PermisionModel
 );
+export const categoryRepository = new BaseRepository<ICategory>(CategoryModel);
+export const tagRepository = new BaseRepository<ITag>(TagModel);

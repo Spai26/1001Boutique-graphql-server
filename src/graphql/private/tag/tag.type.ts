@@ -7,9 +7,9 @@ export const TagTypeDefs = gql`
   }
   extend type Mutation {
     #nameorDescInput ref: generalSchema
-    newTag(input: NameOrDescInput): Response
-    updateTag(input: NameAndDescPatchInput): Response
-    deleteTag(id: ID!): Response
+    newTag(input: NameOrDescInput): TagResponse
+    updateTag(input: NameAndDescPatchInput): TagResponse
+    deleteTag(id: ID!): TagResponse
   }
 
   type SearchTag {
@@ -20,5 +20,11 @@ export const TagTypeDefs = gql`
     id: ID
     name: String
     slug: String
+  }
+
+  type TagResponse {
+    message: String
+    success: Boolean
+    result: Tag
   }
 `;

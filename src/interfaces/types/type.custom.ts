@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-types */
 
+import { ICategory } from '../category.interface';
 import { IBlog } from '../blog.interface';
 
 export interface IPropsTypes<T> {
@@ -43,5 +44,6 @@ export interface ResponseResult {
 }
 
 export interface ResponseModel extends ResponseResult {
-  blog: IBlog;
+  blog?: IBlog;
+  category?: ICategory;
 }
