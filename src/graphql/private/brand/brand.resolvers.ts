@@ -7,12 +7,15 @@ import {
 } from '@middlewares/access/index';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
 
-import {
-  createNewBrandDocument,
-  updateBrandimages
-} from '@controllers/auth/auth.brand.controller';
 import { getModelByName } from '@helpers/querys/generalConsult';
-import { generateSlug } from '@utils/textManipulation';
+
+import { brandRepository } from '@repositories/repository';
+import {
+  createBrand,
+  detailBrand,
+  updateImagesBrand,
+  updateTextBrand
+} from '@controllers/brand';
 
 const Brand = getModelByName('brand');
 export const BrandResolvers = {
@@ -20,22 +23,16 @@ export const BrandResolvers = {
     getAllOnwerBrand: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.READ)(async (parent, args, context) => {
-          const allBrands = await Brand.find({})
-            .populate('onwer')
-            .populate('logo')
-            .populate('gallery');
+          const allBrands = await brandRepository.getAllWithPopulation();
           return allBrands;
         })
       )
     ),
-    getDetailOnwer: authMiddleware(
+    getBrandbyIdOnwer: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.READ)(async (parent, { id }, context) => {
-          const detailBrand = await Brand.findById(id)
-            .populate('onwer')
-            .populate('logo')
-            .populate('gallery');
-          return detailBrand;
+          // TODO: trabajarlo igual que blog
+          return detailBrand(id, context);
         })
       )
     )
@@ -44,42 +41,27 @@ export const BrandResolvers = {
   Mutation: {
     attachNewBrand: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.CREATE)(
-          async (parent, { input }, context) => {
-            return createNewBrandDocument(input, context);
-          }
-        )
+        hasPermission(PERMISSIONS.CREATE)((parent, { input }, context) => {
+          return createBrand(context, input);
+        })
       )
     ),
 
     updateMyBrand: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
-        hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
-          const { id } = args;
-          const { title, ...resBrand } = args.input;
-
-          const updateBrand = await Brand.findByIdAndUpdate(id, {
-            title,
-            slug: generateSlug(title),
-            ...resBrand
-          });
-          return {
-            message: 'brand updated!',
-            success: !!updateBrand
-          };
+        hasPermission(PERMISSIONS.UPDATE)((parent, args, context) => {
+          return updateTextBrand(args);
         })
       )
     ),
     updateImagesOnBrand: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.UPDATE)(async (parent, args, context) => {
-          const updateBrand = await updateBrandimages(args);
-          return updateBrand;
+          return updateImagesBrand(args);
         })
       )
     ),
 
-    // eliminar los blogs relacionados por terminar
     deleteMyBrand: authMiddleware(
       hasRol([ROL.ADMIN, ROL.ROOT])(
         hasPermission(PERMISSIONS.DELETE)(async (parent, { id }, context) => {

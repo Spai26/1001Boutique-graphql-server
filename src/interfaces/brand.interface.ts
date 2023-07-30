@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 import { IImage } from './image.interface';
 
-export interface IBrand {
+export interface IBrand extends Document {
   title: string;
   sub_title: string;
   biografy: string;

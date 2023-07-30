@@ -4,15 +4,15 @@ export const BrandTypeDefs = gql`
   #Query consult list
   extend type Query {
     getAllOnwerBrand: [Brand]
-    getDetailOnwer(id: ID): Brand
+    getBrandbyIdOnwer(id: ID!): Brand
   }
 
   #Mutation list
   extend type Mutation {
-    attachNewBrand(input: brandCreationInput): Response
-    updateMyBrand(id: ID!, input: brandUpdateInput): Response
-    updateImagesOnBrand(id: ID!, input: brandUpdateImageInput): Response
-    deleteMyBrand(id: ID!): String
+    attachNewBrand(input: brandCreationInput): BrandResponse
+    updateMyBrand(id: ID!, input: brandUpdateInput): BrandResponse
+    updateImagesOnBrand(id: ID!, input: brandUpdateImageInput): BrandResponse
+    deleteMyBrand(id: ID!): BrandResponse
   }
 
   #Base model Brand
@@ -69,7 +69,13 @@ export const BrandTypeDefs = gql`
   }
 
   input brandUpdateImageInput {
-    logo: ImageInput
-    gallery: [ImageInput]
+    logo: ImageUpdateInput
+    gallery: [ImageUpdateInput]
+  }
+
+  type BrandResponse {
+    message: String
+    success: Boolean
+    result: Brand
   }
 `;
