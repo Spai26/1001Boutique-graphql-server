@@ -1,23 +1,20 @@
 /* eslint-disable no-underscore-dangle */
 
-import { addBlogToArray } from '@helpers/querys';
+import { addToArray } from '@helpers/querys';
 import { IBlog, ICtx, ResponseModel, ResponseResult } from '@interfaces/index';
 import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
-import { BlogModel, ImageModel } from '@models/nosql';
-import { BlogRepository, ImageRepository } from '@repositories/repository';
+import { blogRepository, imageRepository } from '@repositories/repository';
 import { generateSlug } from '@utils/textManipulation';
 import { Types } from 'mongoose';
 
-const Blog = new BlogRepository(BlogModel);
-const Image = new ImageRepository(ImageModel);
 export const getLisBlogsCreated = async (ctx: ICtx): Promise<IBlog[]> => {
   const { id } = ctx.user;
 
   try {
-    return await Blog.getBlogAuthor(id);
+    return await blogRepository.getBlogAuthor(id);
   } catch (error) {
     throw handlerHttpError(
       `Error in list blog auth function: ${error}`,
@@ -35,14 +32,14 @@ export const createBlog = async (
     const { front_image, ...restdata } = data;
     const { url, model_type } = front_image;
 
-    const newImage = await Image.create({
+    const newImage = await imageRepository.create({
       url,
       model_type,
       model_id: null,
       source: alias
     });
 
-    const newBlog = await Blog.create({
+    const newBlog = await blogRepository.create({
       front_image: newImage._id,
       author: new Types.ObjectId(id),
       origin: alias,
@@ -52,12 +49,12 @@ export const createBlog = async (
     newImage.model_id = newBlog._id;
     newImage.save();
 
-    await addBlogToArray(ctx, newBlog._id);
+    await addToArray(ctx, newBlog._id, 'blogs');
 
     return {
       message: 'Blog created!',
       success: !!newBlog && !!newImage,
-      blog: newBlog
+      result: newBlog
     };
   } catch (error) {
     throw handlerHttpError(
@@ -74,16 +71,16 @@ export const detailBlog = async (
   const { blogs } = ctx.user;
 
   try {
-    const result = await Blog.getById(id);
-    console.log(result);
-    if (blogs.includes(result._id)) {
-      return result;
+    const result = await blogRepository.getById(id);
+
+    if (!blogs.includes(result._id)) {
+      throw handlerHttpError(
+        'you blog dont autorization',
+        typesErrors.UNAUTHORIZED
+      );
     }
 
-    return {
-      message: 'blog does not exist or is incorrect',
-      success: false
-    };
+    return result;
   } catch (error) {
     throw handlerHttpError(
       `Error detail blog auth function: ${error}`,
@@ -99,7 +96,7 @@ export const updateFieldTextBlog = async (
   const { title, body_content, status } = values.input;
 
   try {
-    const updateData = await Blog.update(id, {
+    const updateData = await blogRepository.update(id, {
       title,
       body_content,
       status,
@@ -109,7 +106,7 @@ export const updateFieldTextBlog = async (
     return {
       message: 'Blog fields updated!',
       success: !!updateData,
-      blog: updateData
+      result: updateData
     };
   } catch (error) {
     throw handlerHttpError(
@@ -126,11 +123,11 @@ export const updateFieldImageInBlog = async (
   const { url } = values.input;
   let result;
   try {
-    const blog = await Blog.getByIdWithPopulate(id);
+    const blog = await blogRepository.getByIdWithPopulate(id);
     result = blog.front_image;
 
     if (result && result.url !== url) {
-      const image = await Image.getById(result._id);
+      const image = await imageRepository.getById(result._id);
       if (image) {
         image.url = url;
         result = await image.save();
@@ -156,7 +153,7 @@ export const updateFieldStatusBlog = async (
   const { id, status } = values;
 
   try {
-    result = await Blog.update(id, { status });
+    result = await blogRepository.update(id, { status });
 
     return {
       message: 'Blog status updated!',
@@ -175,7 +172,7 @@ export const deleteBlog = async (
 ): Promise<ResponseResult | ResponseModel> => {
   let imageDelete = null;
   try {
-    const blogExist = await Blog.getById(id);
+    const blogExist = await blogRepository.getById(id);
 
     if (!blogExist) {
       throw handlerHttpError(
@@ -184,14 +181,16 @@ export const deleteBlog = async (
       );
     }
 
-    imageDelete = Blog.delete(id).then((blogDelete) => {
+    imageDelete = blogRepository.delete(id).then((blogDelete) => {
       if (blogDelete) {
-        Image.deleteOne({ model_id: blogExist._id }).catch((error) => {
-          throw handlerHttpError(
-            `Error fn: delete blog image: ${error}`,
-            typesErrors.BAD_REQUEST
-          );
-        });
+        imageRepository
+          .deleteOne({ model_id: blogExist._id })
+          .catch((error) => {
+            throw handlerHttpError(
+              `Error fn: delete blog image: ${error}`,
+              typesErrors.BAD_REQUEST
+            );
+          });
       }
     });
 

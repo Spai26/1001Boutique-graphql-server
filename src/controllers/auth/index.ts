@@ -1,4 +1,3 @@
-export * from './auth.brand.controller';
 export * from './auth.store.controller';
 export * from './authSessions';
 export * from './permission.controller';
