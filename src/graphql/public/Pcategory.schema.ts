@@ -1,4 +1,4 @@
-import { searchByRegex, showlist } from '@helpers/querys';
+import { categoryRepository } from '@repositories/repository';
 import gql from 'graphql-tag';
 
 export const PCategoryTypeDefs = gql`
@@ -10,11 +10,11 @@ export const PCategoryTypeDefs = gql`
 
 export const PCategoryResolvers = {
   Query: {
-    getAllCategory: () => {
-      return showlist('category');
+    getAllCategory: async () => {
+      return categoryRepository.getAll();
     },
     searchCategoryByName: async (_, { text }) => {
-      const category = await searchByRegex('category', 'name', text);
+      const category = await categoryRepository.searchByField('name', text);
       return category;
     }
   }

@@ -6,9 +6,6 @@ import {
   authMiddleware
 } from '@middlewares/access/index';
 import { PERMISSIONS, ROL } from '@interfaces/types/type.custom';
-
-import { getModelByName } from '@helpers/querys/generalConsult';
-
 import { brandRepository } from '@repositories/repository';
 import {
   createBrand,
@@ -17,7 +14,6 @@ import {
   updateTextBrand
 } from '@controllers/brand';
 
-const Brand = getModelByName('brand');
 export const BrandResolvers = {
   Query: {
     getAllOnwerBrand: authMiddleware(

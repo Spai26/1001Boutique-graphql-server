@@ -3,14 +3,12 @@ import {
   handlerHttpError,
   typesErrors
 } from '@middlewares/handlerErrorsApollo';
-import { BlogModel } from '@models/nosql';
-import { BlogRepository } from '@repositories/repository';
 
-const Blog = new BlogRepository(BlogModel);
+import { blogRepository } from '@repositories/repository';
 
 export const getBlogs = async (): Promise<IBlog[]> => {
   try {
-    const listBlogs: IBlog[] = await Blog.getBlogWithPopulations();
+    const listBlogs = await blogRepository.getBlogWithPopulations();
 
     return listBlogs;
   } catch (error) {
@@ -23,7 +21,7 @@ export const getBlogs = async (): Promise<IBlog[]> => {
 
 export const getDetailBlogbyId = async (id: string): Promise<IBlog> => {
   try {
-    const countView = await Blog.incrementViewField(id);
+    const countView = await blogRepository.incrementViewField(id);
     return countView;
   } catch (error) {
     throw handlerHttpError(
@@ -35,7 +33,7 @@ export const getDetailBlogbyId = async (id: string): Promise<IBlog> => {
 
 export const getSearchByTitle = async (text: string): Promise<IBlog[]> => {
   try {
-    return await Blog.searchBlogByField('title', text);
+    return await blogRepository.searchBlogByField('title', text);
   } catch (error) {
     throw handlerHttpError(
       `Error in search function: ${error}`,

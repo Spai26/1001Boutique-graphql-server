@@ -1,8 +1,11 @@
 /* searchBrandByTitle:  */
-import { getModelByName, searchByRegex } from '@helpers/querys/generalConsult';
-import gql from 'graphql-tag';
 
-const brand = getModelByName('brand');
+import {
+  handlerHttpError,
+  typesErrors
+} from '@middlewares/handlerErrorsApollo';
+import { brandRepository } from '@repositories/repository';
+import gql from 'graphql-tag';
 
 export const PBrandTypeDefs = gql`
   extend type Query {
@@ -15,25 +18,49 @@ export const PBrandTypeDefs = gql`
 export const PBrandResolvers = {
   Query: {
     getAllBrand: async () => {
-      const listBrand = await brand
-        .find({})
-        .populate('onwer')
-        .populate('gallery')
-        .populate('logo');
+      const listBrand = await brandRepository.getAllWithPopulation();
       return listBrand;
     },
     getBrandDetail: async (parent, { id }) => {
-      const countViewBrand = await brand
-        .findById(id)
-        .populate('onwer')
-        .populate('gallery')
-        .populate('logo');
+      const countViewBrand = await brandRepository
+        .incrementViewField(id)
+        .then((data) => {
+          if (!data) {
+            throw handlerHttpError('Brand missing', typesErrors.BAD_REQUEST);
+          }
+          return data;
+        })
+        .catch((error) => {
+          throw handlerHttpError(
+            `Brand missing: ${error}`,
+            typesErrors.DATABASE_ERROR
+          );
+        });
+
       return countViewBrand;
     },
 
     searchBrandBytitle: async (_, args) => {
-      const store = await searchByRegex('brand', 'title', args.title);
-      return store;
+      const { title } = args;
+      const brand = await brandRepository
+        .searchBrandByField('title', title)
+        .then((data) => {
+          if (!data) {
+            throw handlerHttpError(
+              'Brand with this title missing',
+              typesErrors.BAD_REQUEST
+            );
+          }
+          return data;
+        })
+        .catch((error) => {
+          throw handlerHttpError(
+            `Brand missing: ${error}`,
+            typesErrors.DATABASE_ERROR
+          );
+        });
+
+      return brand;
     }
   }
 };

@@ -1,4 +1,4 @@
-import { searchByRegex, showlist } from '@helpers/querys/generalConsult';
+import { tagRepository } from '@repositories/repository';
 import gql from 'graphql-tag';
 
 export const PTagTypeDefs = gql`
@@ -11,11 +11,11 @@ export const PTagTypeDefs = gql`
 export const PTagResolvers = {
   Query: {
     getAllTags: async () => {
-      const list = await showlist('tag');
+      const list = tagRepository.getAll();
       return list;
     },
     searchTagByName: async (_, { text }) => {
-      const tag = await searchByRegex('tag', 'name', text);
+      const tag = tagRepository.searchByField('name', text);
       return tag;
     }
   }

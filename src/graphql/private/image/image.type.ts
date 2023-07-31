@@ -6,12 +6,6 @@ export const ImageTypeDefs = gql`
     getAllOnwerGallery: [Image]
   }
 
-  """
-   extend type Mutation {
-    emptyField: String
-     updateImage(id: ID!, input: ImageUpdateInput): Response
-  }
-  """
   type Image {
     id: ID!
     url: String

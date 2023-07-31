@@ -69,10 +69,11 @@ export const detailBlog = async (
   ctx: ICtx
 ): Promise<IBlog | ResponseResult> => {
   const { blogs } = ctx.user;
-
+  const result = await blogRepository.getByIdWithPopulate(id);
+  if (!result) {
+    throw handlerHttpError('Blog Missing dont valid', typesErrors.BAD_REQUEST);
+  }
   try {
-    const result = await blogRepository.getById(id);
-
     if (!blogs.includes(result._id)) {
       throw handlerHttpError(
         'you blog dont autorization',
