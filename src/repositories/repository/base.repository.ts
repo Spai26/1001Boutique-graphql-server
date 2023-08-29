@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Model,
   Document,
@@ -51,11 +52,11 @@ export class BaseRepository<T extends Document> {
     return this.model.findByIdAndDelete(id);
   }
 
-  async deleteOne(conditions: FilterQuery<T>): Promise<unknown | null> {
+  async deleteOne(conditions: FilterQuery<T>): Promise<any | null> {
     return this.model.deleteOne(conditions);
   }
 
-  async deleteMany(conditions: FilterQuery<T>): Promise<unknown | null> {
+  async deleteMany(conditions: FilterQuery<T>): Promise<any | null> {
     return this.model.deleteMany(conditions);
   }
 
