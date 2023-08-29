@@ -51,11 +51,11 @@ export class BaseRepository<T extends Document> {
     return this.model.findByIdAndDelete(id);
   }
 
-  async deleteOne(conditions: FilterQuery<T>) {
+  async deleteOne(conditions: FilterQuery<T>): Promise<unknown | null> {
     return this.model.deleteOne(conditions);
   }
 
-  async deleteMany(conditions: FilterQuery<T>) {
+  async deleteMany(conditions: FilterQuery<T>): Promise<unknown | null> {
     return this.model.deleteMany(conditions);
   }
 
