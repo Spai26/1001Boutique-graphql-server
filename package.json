@@ -7,14 +7,14 @@
   "description": "",
   "exports": "./dist/index.js",
   "scripts": {
-    "build": "cross-env NODE_ENV=production babel src --extensions \".ts,.js\" --out-dir build --copy-files",
-    "start": "cross-env NODE_ENV=production node build/index.js",
+    "build": "babel src --extensions \".ts,.js\" --out-dir build --copy-files",
+    "start": "node build/index.js",
     "lint": "eslint --ignore-path .gitignore . --ext .ts",
     "format": "prettier --ignore-path .gitignore  --write \"**/*.+(ts|js)\"",
     "test": "cross-env NODE_ENV=test jest",
     "test:wacth": "cross-env NODE_ENV=test jest --wacth",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
-    "dev": "cross-env NODE_ENV=development nodemon"
+    "dev": "nodemon"
   },
   "dependencies": {
     "@apollo/server": "^4.7.1",
