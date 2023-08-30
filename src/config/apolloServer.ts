@@ -24,7 +24,7 @@ export async function startApolloServer(typeDefs, resolvers): Promise<void> {
 
   const server = new ApolloServer<ICtx>({
     schema,
-    /* introspection: keys.NODE_ENV !== 'production', */
+    introspection: true,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
   });
 
