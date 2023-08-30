@@ -34,6 +34,12 @@
     "experimentalDecorators": true
   },
 
-  "include": ["src/**/*", "src/__test__", "jest.config.ts"],
-  "exclude": ["node_modules", "build", "coverage"]
+  "include": ["src/**/*", "uploads/*"],
+  "exclude": [
+    "node_modules",
+    "build",
+    "coverage",
+    "src/__test__",
+    "jest.config.ts"
+  ]
 }

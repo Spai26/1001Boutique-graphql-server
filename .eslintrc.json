@@ -29,7 +29,7 @@
     "max-len": ["error", 140],
     "import/estensions": "off",
     "prettier/prettier": "error",
-    "import/no-unresolved": "error",
+    "import/no-unresolved": ["error", { "ignore": ["@"] }],
     "import/prefer-default-export": "off",
     "import/no-default-export": "error",
     "camelcase": "off",
@@ -48,6 +48,22 @@
         "ts": "never"
       }
     ],
+    "import/resolver": {
+      "alias": {
+        "@": ".",
+        "@routes": "./src/routes",
+        "@config": "./src/config",
+        "@models": "./src/models",
+        "@graphql": "./src/graphql",
+        "@interfaces": "./src/interfaces",
+        "@middlewares": "./src/middlewares",
+        "@controllers": "./src/controllers",
+        "@libs": "./src/libs",
+        "@helpers": "./src/helpers",
+        "@utils": "./src/utils",
+        "@repositories": "./src/repositories"
+      }
+    },
 
     "@typescript-eslint/no-use-before-define": [
       "error",

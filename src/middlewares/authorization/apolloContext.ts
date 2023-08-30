@@ -9,7 +9,7 @@ import { CheckVerifyToken } from '@libs/generateJWT';
 import { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
 import { IUserAuth } from '@interfaces/types/context';
-import { userRepository } from '@repositories/repository';
+import { userRepository } from '@repositories/repository/index';
 
 interface customRequest extends Request {
   user?: IUserAuth;
