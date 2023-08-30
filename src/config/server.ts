@@ -9,7 +9,9 @@ export const app: Express = express();
 
 // configuracion de express
 
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev')); // Usar 'dev' solo en desarrollo
+}
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
