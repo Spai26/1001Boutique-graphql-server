@@ -1,8 +1,10 @@
 import { keys } from '@config/variables';
 import { CorsOptions } from 'cors';
 
+const url_origin: string = keys.ORIGIN;
+
 export const corsOptions: CorsOptions = {
-  origin: keys.ORIGIN, // Permitir todos los orígenes
+  origin: url_origin || '*', // Permitir todos los orígenes
   allowedHeaders:
     'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method',
   methods: 'GET, POST, OPTIONS, PUT, DELETE',
